@@ -4,6 +4,7 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "PracticeFlappyBird/Features/Core/GameMode/MainGameModeBase.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -48,4 +49,14 @@ void APlayerPaperCharacter::OnJumpInput(const FInputActionValue& Value) {
 	GetSprite()->SetFlipbook(FbJumpUp);
 	GetSprite()->SetPlaybackPosition(0.0f, false);
 	GetSprite()->Play();
+}
+
+void APlayerPaperCharacter::Die() {
+	DisableInput(Cast<APlayerController>(GetController()));
+
+	if (AGameModeBase* GM = GetWorld()->GetAuthGameMode()) {
+		if (AMainGameModeBase* MainGM = Cast<AMainGameModeBase>(GM)) {
+			MainGM->HandlePlayerDie(this);
+		}
+	}
 }

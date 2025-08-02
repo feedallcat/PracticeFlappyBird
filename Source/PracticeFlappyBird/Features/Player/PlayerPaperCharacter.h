@@ -10,7 +10,7 @@
 #include "PlayerPaperCharacter.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class PRACTICEFLAPPYBIRD_API APlayerPaperCharacter : public APaperCharacter
@@ -19,12 +19,12 @@ class PRACTICEFLAPPYBIRD_API APlayerPaperCharacter : public APaperCharacter
 
 public:
 	APlayerPaperCharacter();
-	
+
 protected:
 
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadonly, Category = "Input");
 	UInputMappingContext* ImcDefault;
@@ -42,5 +42,7 @@ protected:
 	UPaperFlipbook* FbJumpDown;
 
 	void OnJumpInput(const FInputActionValue& Value);
+
+	void Die();
 
 };
