@@ -43,7 +43,6 @@ void APlayerPaperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 }
 
 void APlayerPaperCharacter::OnJumpInput(const FInputActionValue& Value) {
-	UE_LOG(LogTemp, Log, TEXT("Jump!!"));
 	Jump();
 	JumpCurrentCount = 0;
 	GetSprite()->SetFlipbook(FbJumpUp);
