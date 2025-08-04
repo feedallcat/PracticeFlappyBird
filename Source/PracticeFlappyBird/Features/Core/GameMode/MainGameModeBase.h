@@ -17,7 +17,11 @@ class PRACTICEFLAPPYBIRD_API AMainGameModeBase : public AGameModeBase
 
 public:
 
-	void HandlePlayerDie(APlayerPaperCharacter* Player);
+	UFUNCTION(BlueprintCallable, Category = "Game Mode")
+	void RestartGame();
+
+	UFUNCTION(BlueprintCallable, Category = "Game Mode")
+	void HandlePlayerDie();
 
 protected:
 	void BeginPlay() override;

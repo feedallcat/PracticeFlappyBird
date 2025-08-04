@@ -20,6 +20,14 @@ class PRACTICEFLAPPYBIRD_API APlayerPaperCharacter : public APaperCharacter
 public:
 	APlayerPaperCharacter();
 
+	UFUNCTION(BlueprintCallable, Category="Player|LifeCycle")
+	void Freeze();
+
+	UFUNCTION(BlueprintCallable, Category = "Player|LifeCycle")
+	void Unfreeze();
+
+	static APlayerPaperCharacter* GetCurrentPlayer(const UObject* WorldContextObject);
+
 protected:
 
 	void BeginPlay() override;

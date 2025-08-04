@@ -7,6 +7,7 @@
 #include "PracticeFlappyBird/Features/Core/GameMode/MainGameModeBase.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 APlayerPaperCharacter::APlayerPaperCharacter() {
 
@@ -55,7 +56,34 @@ void APlayerPaperCharacter::Die() {
 
 	if (AGameModeBase* GM = GetWorld()->GetAuthGameMode()) {
 		if (AMainGameModeBase* MainGM = Cast<AMainGameModeBase>(GM)) {
-			MainGM->HandlePlayerDie(this);
+			MainGM->HandlePlayerDie();
 		}
 	}
+}
+
+void APlayerPaperCharacter::Freeze() {
+	if (APlayerController* PC = Cast<APlayerController>(GetController())) {
+		DisableInput(PC);
+	}
+	if (UCharacterMovementComponent* CMC = GetCharacterMovement()) {
+		CMC->StopMovementImmediately();
+	}
+	CustomTimeDilation = 0.0f;
+}
+
+void APlayerPaperCharacter::Unfreeze() {
+	if (APlayerController* PC = Cast<APlayerController>(GetController())) {
+		EnableInput(PC);
+	}
+
+	CustomTimeDilation = 1.0f;
+}
+
+APlayerPaperCharacter* APlayerPaperCharacter::GetCurrentPlayer(const UObject* WorldContextObject){
+	APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
+	if (PC) {
+		APlayerPaperCharacter* Player = Cast<APlayerPaperCharacter>(PC->GetPawn());
+		return Player;
+	}
+	return nullptr;
 }

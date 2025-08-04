@@ -5,7 +5,6 @@
 #include "Engine/TriggerBox.h"
 #include "GameFramework/Actor.h"
 #include "PracticeFlappyBird/Features/Core/GameMode/MainGameModeBase.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AWorldObjectManager::AWorldObjectManager()
@@ -40,11 +39,7 @@ void AWorldObjectManager::Tick(float DeltaTime)
 
 void AWorldObjectManager::HandleTriggerBoxOverlap(AActor* OverlappedActor, AActor* OtherActor) {
 	if (CurrentGameMode) {
-		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-		if (PC) {
-			APlayerPaperCharacter* Player = Cast<APlayerPaperCharacter>(PC->GetPawn());
-			CurrentGameMode->HandlePlayerDie(Player);
-		}
+		CurrentGameMode->HandlePlayerDie();
 	}
 }
 
