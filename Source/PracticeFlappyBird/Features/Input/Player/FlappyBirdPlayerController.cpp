@@ -19,10 +19,10 @@ void AFlappyBirdPlayerController::BeginPlay() {
 		if (AFlappyBirdPlayerController* PC = Cast< AFlappyBirdPlayerController>(p1->GetController())) {
 			if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(PC->InputComponent)) {
 				if (StartGameAction) {
-					EIC->BindAction(StartGameAction, ETriggerEvent::Triggered, this, &AFlappyBirdPlayerController::RequestStartGame);
+					EIC->BindAction(StartGameAction, ETriggerEvent::Started, this, &AFlappyBirdPlayerController::RequestStartGame);
 				}
 				if (RestartGameAction) {
-					EIC->BindAction(RestartGameAction, ETriggerEvent::Triggered, this, &AFlappyBirdPlayerController::RequestRestartGame);
+					EIC->BindAction(RestartGameAction, ETriggerEvent::Started, this, &AFlappyBirdPlayerController::RequestRestartGame);
 				}
 			}
 		}
@@ -50,7 +50,7 @@ void AFlappyBirdPlayerController::SetupInputComponent() {
 	Super::SetupInputComponent();
 	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent)) {
 		if (JumpAction) {
-			EIC->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AFlappyBirdPlayerController::RequestJump);
+			EIC->BindAction(JumpAction, ETriggerEvent::Started, this, &AFlappyBirdPlayerController::RequestJump);
 		}
 	}
 }

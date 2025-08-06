@@ -30,7 +30,7 @@ public:
 
 	static APlayerPaperCharacter* GetCurrentPlayer(const UObject* WorldContextObject);
 
-	void TouchedTriggerBox();
+	void TouchedTriggerBox() const;
 
 	UPROPERTY(BlueprintAssignable, Category = "Player|LifeCycle")
 	FOnPlayerDied OnPlayerDied;

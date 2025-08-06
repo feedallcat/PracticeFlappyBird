@@ -29,7 +29,14 @@ void AMainGameModeBase::RestartGame() {
 	if (APlayerPaperCharacter* P1 = APlayerPaperCharacter::GetCurrentPlayer(GetWorld())) {
 		if (AFlappyBirdPlayerController* PC = Cast<AFlappyBirdPlayerController>(P1->GetController())) {
 			UE_LOG(LogTemp, Warning, TEXT("Restarting game for player!!"));
+			GetWorld()->DestroyActor(P1);
 			RestartPlayer(PC);
+			if (APlayerPaperCharacter* P2 = APlayerPaperCharacter::GetCurrentPlayer(GetWorld())) {
+				P2->OnPlayerDied.AddDynamic(this, &AMainGameModeBase::OnPlayerDied);
+			}
+			if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {
+				GS->SetGameState(EMainGameState::WaitingToStart);
+			}
 		}
 	}
 }
@@ -51,6 +58,7 @@ void AMainGameModeBase::HandleCountdown() {
 void AMainGameModeBase::OnPlayStateChanged(EMainGameState NewState) {
 	switch (NewState) {
 	case EMainGameState::WaitingToStart:
+		CountdownTime = 3.0f;
 		break;
 	case EMainGameState::GameOver:
 		break;

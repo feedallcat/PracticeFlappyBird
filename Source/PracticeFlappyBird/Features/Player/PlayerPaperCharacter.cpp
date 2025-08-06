@@ -34,8 +34,7 @@ void APlayerPaperCharacter::RequestJump() {
 	GetSprite()->Play();
 }
 
-void APlayerPaperCharacter::TouchedTriggerBox() {
-	Freeze();
+void APlayerPaperCharacter::TouchedTriggerBox() const {
 	OnPlayerDied.Broadcast();
 }
 
@@ -75,7 +74,7 @@ void APlayerPaperCharacter::OnGameStateChanged(EMainGameState NewGameState) {
 		Unfreeze();
 		break;
 	case EMainGameState::GameOver:
-		Freeze();
+		//Freeze();
 		break;
 	default:
 		break;
