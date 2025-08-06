@@ -14,8 +14,6 @@ class PRACTICEFLAPPYBIRD_API AWorldObjectManager : public AActor
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
-	AWorldObjectManager();
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,11 +27,5 @@ protected:
 
 	UFUNCTION()
 	void HandleTriggerBoxOverlap(AActor* OverlappedActor, AActor* OtherActor);
-
-public:
-	// Called every frame
-	void Tick(float DeltaTime) override;
-
-	AMainGameModeBase* CurrentGameMode;
 
 };

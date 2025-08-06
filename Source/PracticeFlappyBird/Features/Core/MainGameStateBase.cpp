@@ -5,7 +5,7 @@
 #include "Net/UnrealNetwork.h"
 
 AMainGameStateBase::AMainGameStateBase() {
-	CurrentGameState = EMainGameState::WaitingToStart;
+	CurrentGameState = EMainGameState::None;
 }
 
 void AMainGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
@@ -16,11 +16,11 @@ void AMainGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 void AMainGameStateBase::SetGameState(EMainGameState NewState) {
 	if (CurrentGameState != NewState) {
 		CurrentGameState = NewState;
-		OnRep_PlayState();
+		OnReplicatedPlayState();
 	}
 }
 
-void AMainGameStateBase::OnRep_PlayState()
+void AMainGameStateBase::OnReplicatedPlayState() const
 {
 	OnGameStateChanged.Broadcast(CurrentGameState);
 }

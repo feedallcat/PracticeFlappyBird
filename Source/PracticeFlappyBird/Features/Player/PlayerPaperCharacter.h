@@ -7,7 +7,10 @@
 #include "InputMappingContext.h"
 #include "PaperFlipbook.h"
 #include "PaperFlipbookComponent.h"
+#include "Delegates/DelegateCombinations.h"
 #include "PlayerPaperCharacter.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerDied);
 
 /**
  *
@@ -18,7 +21,6 @@ class PRACTICEFLAPPYBIRD_API APlayerPaperCharacter : public APaperCharacter
 	GENERATED_BODY()
 
 public:
-	APlayerPaperCharacter();
 
 	UFUNCTION(BlueprintCallable, Category="Player|LifeCycle")
 	void Freeze();
@@ -28,29 +30,30 @@ public:
 
 	static APlayerPaperCharacter* GetCurrentPlayer(const UObject* WorldContextObject);
 
+	void TouchedTriggerBox();
+
+	UPROPERTY(BlueprintAssignable, Category = "Player|LifeCycle")
+	FOnPlayerDied OnPlayerDied;
+
+	void RequestJump();
+
 protected:
 
 	void BeginPlay() override;
 
-	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadonly, Category = "Input");
-	UInputMappingContext* ImcDefault;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadonly, Category = "Input");
-	UInputAction* IaJump;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadonly, Category = "Sprite");
+	UPROPERTY(EditDefaultsOnly, BlueprintReadonly, Category = "Sprite")
 	UPaperFlipbook* FbIdle;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadonly, Category = "Sprite");
+	UPROPERTY(EditDefaultsOnly, BlueprintReadonly, Category = "Sprite")
 	UPaperFlipbook* FbJumpUp;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadonly, Category = "Sprite");
+	UPROPERTY(EditDefaultsOnly, BlueprintReadonly, Category = "Sprite")
 	UPaperFlipbook* FbJumpDown;
 
-	void OnJumpInput(const FInputActionValue& Value);
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sprite")
+	UPaperFlipbook* FbDead;
 
-	void Die();
+	UFUNCTION()
+	void OnGameStateChanged(EMainGameState NewState);
 
 };

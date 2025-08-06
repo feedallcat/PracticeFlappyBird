@@ -6,14 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "PracticeFlappyBird/Features/Core/GameMode/MainGameModeBase.h"
 
-// Sets default values
-AWorldObjectManager::AWorldObjectManager()
-{
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-}
-
 // Called when the game starts or when spawned
 void AWorldObjectManager::BeginPlay()
 {
@@ -26,20 +18,12 @@ void AWorldObjectManager::BeginPlay()
 
 	TopTriggerBox->OnActorBeginOverlap.AddDynamic(this, &AWorldObjectManager::HandleTriggerBoxOverlap);
 	BottomTriggerBox->OnActorBeginOverlap.AddDynamic(this, &AWorldObjectManager::HandleTriggerBoxOverlap);
-
-	CurrentGameMode = Cast<AMainGameModeBase>(GetWorld()->GetAuthGameMode());
 }
 
-// Called every frame
-void AWorldObjectManager::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
 
 void AWorldObjectManager::HandleTriggerBoxOverlap(AActor* OverlappedActor, AActor* OtherActor) {
-	if (CurrentGameMode) {
-		CurrentGameMode->HandlePlayerDie();
+	if (APlayerPaperCharacter* Player = Cast<APlayerPaperCharacter>(OtherActor)) {
+		Player->TouchedTriggerBox();
 	}
 }
 

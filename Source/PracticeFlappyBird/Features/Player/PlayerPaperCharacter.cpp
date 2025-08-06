@@ -8,42 +8,25 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-
-APlayerPaperCharacter::APlayerPaperCharacter() {
-
-}
+#include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
+#include "PracticeFlappyBird/Features/Core/MainGameState.h"
 
 void APlayerPaperCharacter::BeginPlay() {
 	Super::BeginPlay();
-	if (APlayerController* PC = Cast<APlayerController>(GetController())) {
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer())) {
-			if (ImcDefault) {
-				Subsystem->AddMappingContext(ImcDefault, 0);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("ImcDefault is not set in APlayerPaperCharacter!"));
-			}
-		}
-	}
 
 	GetSprite()->SetLooping(false);
 	JumpMaxCount = 999;
 	JumpCurrentCount = 0;
-}
 
-void APlayerPaperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	UE_LOG(LogTemp, Log, TEXT("Start Setup Player Input Component"));
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
-		if (IaJump) {
-			EnhancedInputComponent->BindAction(IaJump, ETriggerEvent::Triggered, this, &APlayerPaperCharacter::OnJumpInput);
-			UE_LOG(LogTemp, Log, TEXT("Done Add Event "));
-		}
+
+	if (AMainGameStateBase* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
+		GS->OnGameStateChanged.AddDynamic(this, &APlayerPaperCharacter::OnGameStateChanged);
 	}
+
+	Freeze();
 }
 
-void APlayerPaperCharacter::OnJumpInput(const FInputActionValue& Value) {
+void APlayerPaperCharacter::RequestJump() {
 	Jump();
 	JumpCurrentCount = 0;
 	GetSprite()->SetFlipbook(FbJumpUp);
@@ -51,14 +34,9 @@ void APlayerPaperCharacter::OnJumpInput(const FInputActionValue& Value) {
 	GetSprite()->Play();
 }
 
-void APlayerPaperCharacter::Die() {
-	DisableInput(Cast<APlayerController>(GetController()));
-
-	if (AGameModeBase* GM = GetWorld()->GetAuthGameMode()) {
-		if (AMainGameModeBase* MainGM = Cast<AMainGameModeBase>(GM)) {
-			MainGM->HandlePlayerDie();
-		}
-	}
+void APlayerPaperCharacter::TouchedTriggerBox() {
+	Freeze();
+	OnPlayerDied.Broadcast();
 }
 
 void APlayerPaperCharacter::Freeze() {
@@ -79,11 +57,27 @@ void APlayerPaperCharacter::Unfreeze() {
 	CustomTimeDilation = 1.0f;
 }
 
-APlayerPaperCharacter* APlayerPaperCharacter::GetCurrentPlayer(const UObject* WorldContextObject){
+APlayerPaperCharacter* APlayerPaperCharacter::GetCurrentPlayer(const UObject* WorldContextObject) {
 	APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
 	if (PC) {
 		APlayerPaperCharacter* Player = Cast<APlayerPaperCharacter>(PC->GetPawn());
 		return Player;
 	}
 	return nullptr;
+}
+
+void APlayerPaperCharacter::OnGameStateChanged(EMainGameState NewGameState) {
+	switch (NewGameState) {
+	case EMainGameState::WaitingToStart:
+		Freeze();
+		break;
+	case EMainGameState::Playing:
+		Unfreeze();
+		break;
+	case EMainGameState::GameOver:
+		Freeze();
+		break;
+	default:
+		break;
+	}
 }

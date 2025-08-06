@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "PracticeFlappyBird/Features/Player/PlayerPaperCharacter.h"
+#include "PracticeFlappyBird/Features/Core/MainGameState.h"
 #include "MainGameModeBase.generated.h"
 
 /**
@@ -16,12 +17,9 @@ class PRACTICEFLAPPYBIRD_API AMainGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+	void StartGame();
 
-	UFUNCTION(BlueprintCallable, Category = "Game Mode")
 	void RestartGame();
-
-	UFUNCTION(BlueprintCallable, Category = "Game Mode")
-	void HandlePlayerDie();
 
 protected:
 	void BeginPlay() override;
@@ -33,4 +31,9 @@ protected:
 
 	FTimerHandle CountdownTimerHandle;
 
+	UFUNCTION()
+	void OnPlayerDied();
+
+	UFUNCTION()
+	void OnPlayStateChanged(EMainGameState NewState);
 };

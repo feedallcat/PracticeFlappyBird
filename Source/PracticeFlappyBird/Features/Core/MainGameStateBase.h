@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
 #include "MainGameState.h"
+#include "Delegates/DelegateCombinations.h"
 #include "MainGameStateBase.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameStateChanged, EMainGameState, NewState);
 
 /**
  *
@@ -18,13 +21,11 @@ class PRACTICEFLAPPYBIRD_API AMainGameStateBase : public AGameStateBase
 public:
 	AMainGameStateBase();
 
-	UPROPERTY(ReplicatedUsing = OnRep_PlayState, BlueprintReadOnly, Category = "Game State")
+	UPROPERTY(ReplicatedUsing = OnReplicatedPlayState, BlueprintReadOnly, Category = "Game State")
 	EMainGameState CurrentGameState;
 
 	UFUNCTION(BlueprintCallable, Category = "Game State")
 	void SetGameState(EMainGameState NewState);
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameStateChanged, EMainGameState, NewState);
 
 	UPROPERTY(BlueprintAssignable, Category = "Game State")
 	FOnGameStateChanged OnGameStateChanged;
@@ -32,7 +33,7 @@ public:
 protected:
 
 	UFUNCTION()
-	void OnRep_PlayState();
+	void OnReplicatedPlayState() const;
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
