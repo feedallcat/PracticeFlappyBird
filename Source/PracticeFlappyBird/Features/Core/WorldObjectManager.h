@@ -33,7 +33,7 @@ protected:
 	void OnBoundariesOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Obstacle")
-	UClass* ObstaclePipe;
+	TArray<UClass*> ObstaclePipeClassList;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Obstacle")
 	TArray<ATargetPoint*> ObstacleSpawnPointList;
@@ -50,12 +50,15 @@ private:
 	UFUNCTION()
 	void OnDestroyerOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
-	void SpawnObstacle();
 	void DestroyObstacle(AActor* Obstacle);
 	UPROPERTY(EditDefaultsOnly, Category = "Obstacle")
 	UClass* ObstacleBlueprint;
 
 	UPROPERTY(EditInstanceOnly, Category="Obstacle")
-	float ObstacleSpeed = 0.1f;
+	float ObstacleSpeed = 100.0f;
+
+	float ElapsedTime = 0.0f;
+	void MoveObstacle(float MoveSpeed);
+	void SpawnObstacle(int32 Second, float DeltaTime);
 
 };

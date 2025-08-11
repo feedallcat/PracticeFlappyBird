@@ -22,17 +22,38 @@ void AWorldObjectManager::BeginPlay()
 		GS->OnGameStateChanged.AddDynamic(this, &AWorldObjectManager::OnGameStateChanged);
 	}
 
-	for (ATriggerBox* Destroyer : DestroyerList) {
-		Destroyer->OnActorBeginOverlap.AddDynamic(this, &AWorldObjectManager::OnDestroyerOverlap);
+	for (int32 i = 0; i < DestroyerList.Num(); i++) {
+		ATriggerBox* DestroyerTriggerBox = DestroyerList[i];
+		DestroyerTriggerBox->OnActorBeginOverlap.AddDynamic(this, &AWorldObjectManager::OnDestroyerOverlap);
 	}
 }
 
 void AWorldObjectManager::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	for (AActor* Obstacle : ObstaclesPipeList) {
+	if (AMainGameStateBase* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
+		EMainGameState State = GS->CurrentGameState;
+
+		switch (State) {
+		case EMainGameState::WaitingToStart:
+			break;
+		case EMainGameState::Playing:
+			SpawnObstacle(2.0f, DeltaTime);
+			MoveObstacle(ObstacleSpeed * DeltaTime);
+			break;
+		case EMainGameState::GameOver:
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void AWorldObjectManager::MoveObstacle(float MoveSpeed) {
+	for (int32 i = 0; i < ObstaclesPipeList.Num(); i++) {
+		AActor* Obstacle = ObstaclesPipeList[i];
 		FVector CurrentLocation = Obstacle->GetActorLocation();
-		FVector NewLocation = FVector(CurrentLocation.X - CurrentLocation.X * ObstacleSpeed * DeltaTime, CurrentLocation.Y, CurrentLocation.Z);
+		FVector NewLocation = FVector(CurrentLocation.X - MoveSpeed, CurrentLocation.Y, CurrentLocation.Z);
 		Obstacle->SetActorLocation(NewLocation);
 	}
 }
@@ -59,7 +80,6 @@ void AWorldObjectManager::OnDestroyerOverlap(AActor* OverlappedActor, AActor* Ot
 void AWorldObjectManager::OnGameStateChanged(EMainGameState NewState) {
 	switch (NewState) {
 	case EMainGameState::WaitingToStart:
-		SpawnObstacle();
 		break;
 	case EMainGameState::Playing:
 		break;
@@ -70,15 +90,22 @@ void AWorldObjectManager::OnGameStateChanged(EMainGameState NewState) {
 	}
 }
 
-void AWorldObjectManager::SpawnObstacle() {
-	if (UWorld* World = GetWorld()) {
-		if (ObstaclePipe) {
-			if (ObstacleSpawnPointList.Num() > 0) {
-				int32 RandomIndex = FMath::RandRange(0, ObstacleSpawnPointList.Num() - 1);
-				ATargetPoint* RandomTargetPoint = ObstacleSpawnPointList[RandomIndex];
-				FRotator SpawnRotation = GetActorRotation();
-				AActor* obstacle = World->SpawnActor<AActor>(ObstaclePipe, RandomTargetPoint->GetActorLocation(), SpawnRotation);
-				ObstaclesPipeList.Add(obstacle);
+void AWorldObjectManager::SpawnObstacle(int32 Second, float DeltaTime) {
+	ElapsedTime += DeltaTime;
+	if (ElapsedTime > Second) {
+		ElapsedTime = 0.0f;
+
+		if (UWorld* World = GetWorld()) {
+			int32 RandomObstaclePipeClassIndex = FMath::RandRange(0, ObstaclePipeClassList.Num() - 1);
+			UClass* ObstaclePipeClass = ObstaclePipeClassList[RandomObstaclePipeClassIndex];
+			if (ObstaclePipeClass) {
+				if (ObstacleSpawnPointList.Num() > 0) {
+					int32 RandomSpawnIndex = FMath::RandRange(0, ObstacleSpawnPointList.Num() - 1);
+					ATargetPoint* RandomTargetPoint = ObstacleSpawnPointList[RandomSpawnIndex];
+					FRotator SpawnRotation = GetActorRotation();
+					AActor* obstacle = World->SpawnActor<AActor>(ObstaclePipeClass, RandomTargetPoint->GetActorLocation(), SpawnRotation);
+					ObstaclesPipeList.Add(obstacle);
+				}
 			}
 		}
 	}
