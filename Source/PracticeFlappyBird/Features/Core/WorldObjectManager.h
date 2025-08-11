@@ -30,7 +30,7 @@ protected:
 	ATriggerBox* BottomTriggerBox;
 
 	UFUNCTION()
-	void HandleTriggerBoxOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	void OnBoundariesOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Obstacle")
 	UClass* ObstaclePipe;
@@ -38,13 +38,22 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Obstacle")
 	TArray<ATargetPoint*> ObstacleSpawnPointList;
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Destoyer")
+	TArray<ATriggerBox*> DestroyerList;
+
 private:
 	TArray<AActor*> ObstaclesPipeList;
 
 	UFUNCTION()
 	void OnGameStateChanged(EMainGameState NewState);
 
+	UFUNCTION()
+	void OnDestroyerOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
 	void SpawnObstacle();
+	void DestroyObstacle(AActor* Obstacle);
+	UPROPERTY(EditDefaultsOnly, Category = "Obstacle")
+	UClass* ObstacleBlueprint;
 
 	UPROPERTY(EditInstanceOnly, Category="Obstacle")
 	float ObstacleSpeed = 0.1f;

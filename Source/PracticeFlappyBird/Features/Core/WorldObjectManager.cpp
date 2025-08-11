@@ -15,11 +15,15 @@ void AWorldObjectManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TopTriggerBox->OnActorBeginOverlap.AddDynamic(this, &AWorldObjectManager::HandleTriggerBoxOverlap);
-	BottomTriggerBox->OnActorBeginOverlap.AddDynamic(this, &AWorldObjectManager::HandleTriggerBoxOverlap);
+	TopTriggerBox->OnActorBeginOverlap.AddDynamic(this, &AWorldObjectManager::OnBoundariesOverlap);
+	BottomTriggerBox->OnActorBeginOverlap.AddDynamic(this, &AWorldObjectManager::OnBoundariesOverlap);
 
 	if (AMainGameStateBase* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
 		GS->OnGameStateChanged.AddDynamic(this, &AWorldObjectManager::OnGameStateChanged);
+	}
+
+	for (ATriggerBox* Destroyer : DestroyerList) {
+		Destroyer->OnActorBeginOverlap.AddDynamic(this, &AWorldObjectManager::OnDestroyerOverlap);
 	}
 }
 
@@ -34,10 +38,22 @@ void AWorldObjectManager::Tick(float DeltaTime) {
 }
 
 
-void AWorldObjectManager::HandleTriggerBoxOverlap(AActor* OverlappedActor, AActor* OtherActor) {
+void AWorldObjectManager::OnBoundariesOverlap(AActor* OverlappedActor, AActor* OtherActor) {
 	if (APlayerPaperCharacter* Player = Cast<APlayerPaperCharacter>(OtherActor)) {
 		Player->TouchedTriggerBox();
 	}
+}
+
+void AWorldObjectManager::OnDestroyerOverlap(AActor* OverlappedActor, AActor* OtherActor) {
+	if (OtherActor->IsA(ObstacleBlueprint)) {
+		DestroyObstacle(OtherActor);
+		return;
+	}
+	if (APlayerPaperCharacter* P1 = Cast<APlayerPaperCharacter>(OtherActor)) {
+		GetWorld()->DestroyActor(P1);
+		return;
+	}
+	GetWorld()->DestroyActor(OtherActor);
 }
 
 void AWorldObjectManager::OnGameStateChanged(EMainGameState NewState) {
@@ -66,5 +82,10 @@ void AWorldObjectManager::SpawnObstacle() {
 			}
 		}
 	}
+}
+
+void AWorldObjectManager::DestroyObstacle(AActor* Obstacle) {
+	ObstaclesPipeList.Remove(Obstacle);
+	GetWorld()->DestroyActor(Obstacle);
 }
 
