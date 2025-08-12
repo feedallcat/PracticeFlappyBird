@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
 #include "PracticeFlappyBird/Features/Core/MainGameState.h"
+#include "Components/CapsuleComponent.h"
 
 void APlayerPaperCharacter::BeginPlay() {
 	Super::BeginPlay();
@@ -24,6 +25,7 @@ void APlayerPaperCharacter::BeginPlay() {
 	}
 
 	Freeze();
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APlayerPaperCharacter::OnBeginOverlap);
 }
 
 void APlayerPaperCharacter::RequestJump() {
@@ -78,5 +80,14 @@ void APlayerPaperCharacter::OnGameStateChanged(EMainGameState NewGameState) {
 		break;
 	default:
 		break;
+	}
+}
+
+void APlayerPaperCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	if (OtherComp && OtherComp->ComponentHasTag(TEXT("ScoreTriggerBox"))) {
+		UE_LOG(LogTemp, Warning, TEXT("Score!"));
+	}
+	else if (OtherComp && OtherComp->ComponentHasTag(TEXT("Obstacle"))) {
+		UE_LOG(LogTemp, Warning, TEXT("DIE!!!"));
 	}
 }

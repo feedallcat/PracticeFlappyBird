@@ -103,8 +103,8 @@ void AWorldObjectManager::SpawnObstacle(int32 Second, float DeltaTime) {
 					int32 RandomSpawnIndex = FMath::RandRange(0, ObstacleSpawnPointList.Num() - 1);
 					ATargetPoint* RandomTargetPoint = ObstacleSpawnPointList[RandomSpawnIndex];
 					FRotator SpawnRotation = GetActorRotation();
-					AActor* obstacle = World->SpawnActor<AActor>(ObstaclePipeClass, RandomTargetPoint->GetActorLocation(), SpawnRotation);
-					ObstaclesPipeList.Add(obstacle);
+					AActor* Obstacle = World->SpawnActor<AActor>(ObstaclePipeClass, RandomTargetPoint->GetActorLocation(), SpawnRotation);
+					ObstaclesPipeList.Add(Obstacle);
 				}
 			}
 		}
