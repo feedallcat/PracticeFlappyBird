@@ -11,6 +11,7 @@
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
 #include "PracticeFlappyBird/Features/Core/MainGameState.h"
 #include "Components/CapsuleComponent.h"
+#include "PracticeFlappyBird/Features/Core/PlayerState/MyPlayerState.h"
 
 void APlayerPaperCharacter::BeginPlay() {
 	Super::BeginPlay();
@@ -26,6 +27,18 @@ void APlayerPaperCharacter::BeginPlay() {
 
 	Freeze();
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APlayerPaperCharacter::OnBeginOverlap);
+
+	if (AMyPlayerState* PS = Cast<AMyPlayerState>(GetPlayerState())) {
+		MyPS = PS;
+	}
+
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		if (AMyHUD* HUD = Cast<AMyHUD>(PC->GetHUD()))
+		{
+			MyHUD = HUD;
+		}
+	}
 }
 
 void APlayerPaperCharacter::RequestJump() {
@@ -85,9 +98,12 @@ void APlayerPaperCharacter::OnGameStateChanged(EMainGameState NewGameState) {
 
 void APlayerPaperCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (OtherComp && OtherComp->ComponentHasTag(TEXT("ScoreTriggerBox"))) {
-		UE_LOG(LogTemp, Warning, TEXT("Score!"));
+		if (MyPS) {
+			MyPS->PlayerScore += 1;
+			MyHUD->UpdateTBScore(MyPS->PlayerScore);
+		}
 	}
 	else if (OtherComp && OtherComp->ComponentHasTag(TEXT("Obstacle"))) {
-		UE_LOG(LogTemp, Warning, TEXT("DIE!!!"));
+		OnPlayerDied.Broadcast();
 	}
 }

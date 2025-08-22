@@ -3,13 +3,22 @@
 
 #include "MyHUD.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
+#include "MyUserWidget.h"
 
 void AMyHUD::BeginPlay() {
 	Super::BeginPlay();
 	if (MainWidgetClass) {
-		UUserWidget* MainWidget = CreateWidget<UUserWidget>(GetWorld(), MainWidgetClass);
+		UMyUserWidget* MainWidget = CreateWidget<UMyUserWidget>(GetWorld(), MainWidgetClass);
 		if (MainWidget) {
 			MainWidget->AddToViewport();
+			MyWidgetKub = MainWidget;
 		}
+	}
+}
+
+void AMyHUD::UpdateTBScore(int32 Score) {
+	if (MyWidgetKub) {
+		MyWidgetKub->UpdateTBScore(Score);
 	}
 }

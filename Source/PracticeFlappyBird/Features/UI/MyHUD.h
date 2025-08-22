@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "MyUserWidget.h"
 #include "MyHUD.generated.h"
 
 /**
@@ -17,8 +18,11 @@ class PRACTICEFLAPPYBIRD_API AMyHUD : public AHUD
 public:
 	void BeginPlay() override;
 
+	void UpdateTBScore(int32 Score);
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UUserWidget> MainWidgetClass;
-	
+
+	UMyUserWidget* MyWidgetKub;
 };
