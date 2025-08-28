@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "MyUserWidget.generated.h"
+#include "GameHUDUserWidget.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
-class PRACTICEFLAPPYBIRD_API UMyUserWidget : public UUserWidget
+class PRACTICEFLAPPYBIRD_API UGameHUDUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -18,6 +18,5 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* TB_Score;
 
-	void UpdateTBScore(int32 Score);
-	
+	void UpdateScore(int32 Score);
 };

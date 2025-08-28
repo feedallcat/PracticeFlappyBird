@@ -12,6 +12,9 @@
 #include "PracticeFlappyBird/Features/Core/MainGameState.h"
 #include "Components/CapsuleComponent.h"
 #include "PracticeFlappyBird/Features/Core/PlayerState/MyPlayerState.h"
+#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
+#include "PracticeFlappyBird/Features/UI/GameHUDUserWidget.h"
+#include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"
 
 void APlayerPaperCharacter::BeginPlay() {
 	Super::BeginPlay();
@@ -30,14 +33,6 @@ void APlayerPaperCharacter::BeginPlay() {
 
 	if (AMyPlayerState* PS = Cast<AMyPlayerState>(GetPlayerState())) {
 		MyPS = PS;
-	}
-
-	if (APlayerController* PC = Cast<APlayerController>(GetController()))
-	{
-		if (AMyHUD* HUD = Cast<AMyHUD>(PC->GetHUD()))
-		{
-			MyHUD = HUD;
-		}
 	}
 }
 
@@ -100,7 +95,12 @@ void APlayerPaperCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCompon
 	if (OtherComp && OtherComp->ComponentHasTag(TEXT("ScoreTriggerBox"))) {
 		if (MyPS) {
 			MyPS->PlayerScore += 1;
-			MyHUD->UpdateTBScore(MyPS->PlayerScore);
+			if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
+			{
+				if (UGameHUDUserWidget* GameHUDUserWidget = Cast<UGameHUDUserWidget>(GI->GetUIManager()->GetCurrentWidget())) {
+					GameHUDUserWidget->UpdateScore(MyPS->PlayerScore);
+				}
+			}
 		}
 	}
 	else if (OtherComp && OtherComp->ComponentHasTag(TEXT("Obstacle"))) {
