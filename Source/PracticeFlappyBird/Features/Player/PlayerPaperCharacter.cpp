@@ -34,6 +34,7 @@ void APlayerPaperCharacter::BeginPlay() {
 	if (AMyPlayerState* PS = Cast<AMyPlayerState>(GetPlayerState())) {
 		MyPS = PS;
 	}
+
 }
 
 void APlayerPaperCharacter::RequestJump() {
@@ -81,6 +82,9 @@ void APlayerPaperCharacter::OnGameStateChanged(EMainGameState NewGameState) {
 		Freeze();
 		break;
 	case EMainGameState::Playing:
+		if (UGameHUDUserWidget* GameHud = GetGameHud()) {
+			GameHud->HideScore(false);
+		}
 		Unfreeze();
 		break;
 	case EMainGameState::GameOver:
@@ -95,15 +99,23 @@ void APlayerPaperCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCompon
 	if (OtherComp && OtherComp->ComponentHasTag(TEXT("ScoreTriggerBox"))) {
 		if (MyPS) {
 			MyPS->PlayerScore += 1;
-			if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
-			{
-				if (UGameHUDUserWidget* GameHUDUserWidget = Cast<UGameHUDUserWidget>(GI->GetUIManager()->GetCurrentWidget())) {
-					GameHUDUserWidget->UpdateScore(MyPS->PlayerScore);
-				}
+			if (UGameHUDUserWidget* GameHud = GetGameHud()) {
+				GameHud->UpdateScore(MyPS->PlayerScore);
 			}
 		}
 	}
 	else if (OtherComp && OtherComp->ComponentHasTag(TEXT("Obstacle"))) {
 		OnPlayerDied.Broadcast();
 	}
+}
+
+UGameHUDUserWidget* APlayerPaperCharacter::GetGameHud() {
+	if (auto* MyGI = GetGameInstance<UMyGameInstance>()) {
+		if (auto* MyUI = MyGI->GetUIManager()) {
+			if (auto* HUD = Cast<UGameHUDUserWidget>(MyUI->GetCurrentWidget())) {
+				return HUD;
+			}
+		}
+	}
+	return nullptr;
 }

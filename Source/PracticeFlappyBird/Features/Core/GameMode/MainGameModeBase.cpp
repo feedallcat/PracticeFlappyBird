@@ -6,9 +6,20 @@
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
 #include "PracticeFlappyBird/Features/Core/MainGameState.h"
 #include "PracticeFlappyBird/Features/Input/Player/FlappyBirdPlayerController.h"
+#include "PracticeFlappyBird/Features/UI/GameHUDUserWidget.h"
+#include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"
+
 
 void AMainGameModeBase::BeginPlay() {
 	Super::BeginPlay();
+
+	if (auto* MyGI = GetGameInstance<UMyGameInstance>()) {
+		if (auto* MyUI = MyGI->GetUIManager()) {
+			MyGameInstance = MyGI;
+			MyUI->OnScreenOpened.AddDynamic(this, &AMainGameModeBase::HandleScreenOpened);
+		}
+	}
+
 	if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {
 		GS->OnGameStateChanged.AddDynamic(this, &AMainGameModeBase::OnPlayStateChanged);
 		GS->SetGameState(EMainGameState::WaitingToStart);
@@ -42,16 +53,27 @@ void AMainGameModeBase::RestartGame() {
 }
 
 void AMainGameModeBase::HandleCountdown() {
+
+	MyGameHUDUserWidget->HideCountdown(false);
+	MyGameHUDUserWidget->UpdateCountdown(CountdownTime);
+
 	if (CountdownTime <= 0.0f) {
 		GetWorldTimerManager().ClearTimer(CountdownTimerHandle);
 		UE_LOG(LogTemp, Warning, TEXT("Game started!"));
 		if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {
 			GS->SetGameState(EMainGameState::Playing);
 		}
+		MyGameHUDUserWidget->HideCountdown(true);
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("Game start in : %f"), CountdownTime);
 		CountdownTime -= 1.0f;
+	}
+}
+
+void AMainGameModeBase::HandleScreenOpened(UUserWidget* NewWidget) {
+	if (auto* HUD = Cast<UGameHUDUserWidget>(NewWidget)) {
+		MyGameHUDUserWidget = HUD;
 	}
 }
 

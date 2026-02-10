@@ -9,6 +9,8 @@
 #include "PaperFlipbookComponent.h"
 #include "Delegates/DelegateCombinations.h"
 #include "PracticeFlappyBird/Features/Core/PlayerState/MyPlayerState.h"
+#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
+#include "PracticeFlappyBird/Features/UI/GameHUDUserWidget.h"
 #include "PlayerPaperCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerDied);
@@ -56,6 +58,8 @@ protected:
 
 	UFUNCTION()
 	void OnGameStateChanged(EMainGameState NewState);
+
+	class UGameHUDUserWidget* GetGameHud();
 
 private:
 	UFUNCTION()

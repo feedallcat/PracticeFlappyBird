@@ -18,5 +18,13 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* TB_Score;
 
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* TB_Countdown;
+
 	void UpdateScore(int32 Score);
+
+	void HideScore(bool Toggle);
+
+	void UpdateCountdown(int32 Time);
+	void HideCountdown(bool Toggle);
 };

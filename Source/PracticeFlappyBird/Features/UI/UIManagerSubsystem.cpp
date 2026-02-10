@@ -23,6 +23,7 @@ void UUIManagerSubsystem::ShowScreen(TSubclassOf<UUserWidget> ScreenClass)
 			if (CurrentWidget)
 			{
 				CurrentWidget->AddToViewport(0); // 0 = base layer
+				OnScreenOpened.Broadcast(CurrentWidget);
 			}
 		}
 	}
