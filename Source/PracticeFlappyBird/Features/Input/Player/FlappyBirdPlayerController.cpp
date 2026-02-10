@@ -6,7 +6,6 @@
 #include "EnhancedInputComponent.h"
 #include "PracticeFlappyBird/Features/Player/PlayerPaperCharacter.h"
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
-#include "PracticeFlappyBird/Features/Core/MainGameState.h"
 #include "PracticeFlappyBird/Features/Core/GameMode/MainGameModeBase.h"
 #include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
 #include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"

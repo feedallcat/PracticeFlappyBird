@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "PracticeFlappyBird/Features/Player/PlayerPaperCharacter.h"
-#include "PracticeFlappyBird/Features/Core/MainGameState.h"
 #include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
 #include "PracticeFlappyBird/Features/UI/GameHudUserWidget.h"
 #include "MainGameModeBase.generated.h"

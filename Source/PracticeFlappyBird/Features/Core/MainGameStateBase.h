@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
-#include "MainGameState.h"
+#include "GameDefinitions.h"
 #include "Delegates/DelegateCombinations.h"
 #include "MainGameStateBase.generated.h"
 

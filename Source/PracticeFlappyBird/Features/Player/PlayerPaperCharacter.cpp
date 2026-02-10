@@ -9,7 +9,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
-#include "PracticeFlappyBird/Features/Core/MainGameState.h"
 #include "Components/CapsuleComponent.h"
 #include "PracticeFlappyBird/Features/Core/PlayerState/MyPlayerState.h"
 #include "PracticeFlappyBird/Features/Core/MyGameInstance.h"

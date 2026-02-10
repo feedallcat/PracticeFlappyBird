@@ -3,13 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MainGameState.generated.h"
 
 UENUM(BlueprintType)
-enum class EMainGameState: uint8
+enum class EMainGameState : uint8
 {
-	None           UMETA(DisplayName = "None"),          // No game state set
+    None           UMETA(DisplayName = "None"),          // No game state set
     WaitingToStart UMETA(DisplayName = "Waiting To Start"), // Game loaded, waiting for first input
     Playing        UMETA(DisplayName = "Playing"),        // Active gameplay
     GameOver       UMETA(DisplayName = "Game Over")       // Player died, game ended
+};
+
+UENUM(BlueprintType)
+enum class EPlayerStatus : uint8
+{
+    None		UMETA(DisplayName = "None"),
+    Alive		UMETA(DisplayName = "Alive"),
+    Dead		UMETA(DisplayName = "Dead")
 };
