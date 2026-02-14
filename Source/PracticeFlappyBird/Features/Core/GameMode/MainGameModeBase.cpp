@@ -7,6 +7,7 @@
 #include "PracticeFlappyBird/Features/Input/Player/FlappyBirdPlayerController.h"
 #include "PracticeFlappyBird/Features/UI/GameHUDUserWidget.h"
 #include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"
+#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
 
 
 void AMainGameModeBase::BeginPlay() {
@@ -24,7 +25,7 @@ void AMainGameModeBase::BeginPlay() {
 		GS->SetGameState(EMainGameState::WaitingToStart);
 	}
 	if (APlayerPaperCharacter* P1 = APlayerPaperCharacter::GetCurrentPlayer(GetWorld())) {
-		P1->OnPlayerDied.AddDynamic(this, &AMainGameModeBase::OnPlayerDied);
+		P1->OnPlayerStatusChanged.AddDynamic(this, &AMainGameModeBase::OnPlayerStatusChanged);
 	}
 }
 
@@ -42,7 +43,7 @@ void AMainGameModeBase::RestartGame() {
 			GetWorld()->DestroyActor(P1);
 			RestartPlayer(PC);
 			if (APlayerPaperCharacter* P2 = APlayerPaperCharacter::GetCurrentPlayer(GetWorld())) {
-				P2->OnPlayerDied.AddDynamic(this, &AMainGameModeBase::OnPlayerDied);
+				P2->OnPlayerStatusChanged.AddDynamic(this, &AMainGameModeBase::OnPlayerStatusChanged);
 			}
 			if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {
 				GS->SetGameState(EMainGameState::WaitingToStart);
@@ -60,7 +61,7 @@ void AMainGameModeBase::HandleCountdown() {
 		GetWorldTimerManager().ClearTimer(CountdownTimerHandle);
 		UE_LOG(LogTemp, Warning, TEXT("Game started!"));
 		if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {
-			GS->SetGameState(EMainGameState::Playing);
+			GS->SetGameState(EMainGameState::Started);
 		}
 		MyGameHUDUserWidget->HideCountdown(true);
 	}
@@ -83,15 +84,24 @@ void AMainGameModeBase::OnPlayStateChanged(EMainGameState NewState) {
 		break;
 	case EMainGameState::GameOver:
 		break;
-	case EMainGameState::Playing:
+	case EMainGameState::Started:
 		break;
 	default:
 		break;
 	}
 }
 
-void AMainGameModeBase::OnPlayerDied() {
-	if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {
-		GS->SetGameState(EMainGameState::GameOver);
+void AMainGameModeBase::OnPlayerStatusChanged(EPlayerStatus NewStatus) {
+	switch (NewStatus) {
+	case EPlayerStatus::Alive:
+		break;
+	case EPlayerStatus::Dead:
+		if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {
+			GS->SetGameState(EMainGameState::GameOver);
+		}
+		break;
+	default:
+		break;
 	}
+
 }

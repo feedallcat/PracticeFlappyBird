@@ -4,8 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "EnhancedInputSubsystems.h"
 #include "FlappyBirdPlayerController.generated.h"
+
+class UInputMappingContext;
+class UInputAction;
+
+class UEnhancedInputLocalPlayerSubsystem;
 
 /**
  * 
@@ -28,7 +32,7 @@ protected:
 	 void OnPlayStateChanged(EMainGameState NewState);
 
 private:
-	UPROPERTY()
+	UPROPERTY(Transient)
 	UEnhancedInputLocalPlayerSubsystem* Subsystem;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Flappy Bird Input")

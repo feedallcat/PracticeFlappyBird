@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PlayerPaperCharacter.h"
-#include "InputMappingContext.h"
+
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "PracticeFlappyBird/Features/Core/GameMode/MainGameModeBase.h"
@@ -14,6 +14,9 @@
 #include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
 #include "PracticeFlappyBird/Features/UI/GameHUDUserWidget.h"
 #include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"
+#include "PaperFlipbook.h"
+#include "PaperFlipbookComponent.h"
+#include "PracticeFlappyBird/Features/Core/GameDefinitions.h"
 
 void APlayerPaperCharacter::BeginPlay() {
 	Super::BeginPlay();
@@ -30,9 +33,7 @@ void APlayerPaperCharacter::BeginPlay() {
 	Freeze();
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APlayerPaperCharacter::OnBeginOverlap);
 
-	if (AMyPlayerState* PS = Cast<AMyPlayerState>(GetPlayerState())) {
-		MyPS = PS;
-	}
+
 
 }
 
@@ -45,7 +46,7 @@ void APlayerPaperCharacter::RequestJump() {
 }
 
 void APlayerPaperCharacter::TouchedTriggerBox() const {
-	OnPlayerDied.Broadcast();
+	OnPlayerStatusChanged.Broadcast(EPlayerStatus::Dead);
 }
 
 void APlayerPaperCharacter::Freeze() {
@@ -66,6 +67,10 @@ void APlayerPaperCharacter::Unfreeze() {
 	CustomTimeDilation = 1.0f;
 }
 
+void APlayerPaperCharacter::KilledPlayer() {
+	OnPlayerStatusChanged.Broadcast(EPlayerStatus::Dead);
+}
+
 APlayerPaperCharacter* APlayerPaperCharacter::GetCurrentPlayer(const UObject* WorldContextObject) {
 	APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
 	if (PC) {
@@ -80,10 +85,15 @@ void APlayerPaperCharacter::OnGameStateChanged(EMainGameState NewGameState) {
 	case EMainGameState::WaitingToStart:
 		Freeze();
 		break;
-	case EMainGameState::Playing:
+	case EMainGameState::Started:
 		if (UGameHUDUserWidget* GameHud = GetGameHud()) {
 			GameHud->HideScore(false);
+			if (AMyPlayerState* PS = GetMyPlayerState()) {
+				PS->PlayerScore = 0;
+				GameHud->HideScore(0);
+			}
 		}
+		
 		Unfreeze();
 		break;
 	case EMainGameState::GameOver:
@@ -96,16 +106,25 @@ void APlayerPaperCharacter::OnGameStateChanged(EMainGameState NewGameState) {
 
 void APlayerPaperCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (OtherComp && OtherComp->ComponentHasTag(TEXT("ScoreTriggerBox"))) {
-		if (MyPS) {
-			MyPS->PlayerScore += 1;
+		if (AMyPlayerState* PS = GetMyPlayerState()) {
+			PS->PlayerScore += 1;
 			if (UGameHUDUserWidget* GameHud = GetGameHud()) {
-				GameHud->UpdateScore(MyPS->PlayerScore);
+				GameHud->UpdateScore(PS->PlayerScore);
 			}
 		}
 	}
 	else if (OtherComp && OtherComp->ComponentHasTag(TEXT("Obstacle"))) {
-		OnPlayerDied.Broadcast();
+		// KilledPlayer(); // TODO: Implement kill logic
 	}
+}
+
+class AMyPlayerState* APlayerPaperCharacter::GetMyPlayerState()
+{
+	if (!MyPS)
+	{
+		MyPS = GetPlayerState<AMyPlayerState>();
+	}
+	return MyPS;
 }
 
 UGameHUDUserWidget* APlayerPaperCharacter::GetGameHud() {

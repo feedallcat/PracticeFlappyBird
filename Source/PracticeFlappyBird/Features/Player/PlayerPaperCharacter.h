@@ -4,16 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "PaperCharacter.h"
-#include "InputMappingContext.h"
-#include "PaperFlipbook.h"
-#include "PaperFlipbookComponent.h"
 #include "Delegates/DelegateCombinations.h"
-#include "PracticeFlappyBird/Features/Core/PlayerState/MyPlayerState.h"
-#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
-#include "PracticeFlappyBird/Features/UI/GameHUDUserWidget.h"
+#include "PracticeFlappyBird/Features/Core/GameDefinitions.h"
 #include "PlayerPaperCharacter.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerDied);
+class UPaperFlipbook;
+class AMyPlayerState;
+class UGameHUDUserWidget;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatusChanged, EPlayerStatus, NewStatus);
 
 /**
  *
@@ -36,9 +35,11 @@ public:
 	void TouchedTriggerBox() const;
 
 	UPROPERTY(BlueprintAssignable, Category = "Player|LifeCycle")
-	FOnPlayerDied OnPlayerDied;
+	FOnPlayerStatusChanged OnPlayerStatusChanged;
 
 	void RequestJump();
+
+	void KilledPlayer();
 
 protected:
 
@@ -61,9 +62,15 @@ protected:
 
 	class UGameHUDUserWidget* GetGameHud();
 
+	UFUNCTION(BlueprintCallable, Category = "Player|State")
+	class AMyPlayerState* GetMyPlayerState();
+
 private:
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UPROPERTY(Transient)
 	AMyPlayerState* MyPS;
+
+
 };

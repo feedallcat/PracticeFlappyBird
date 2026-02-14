@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Engine/TriggerBox.h"
-#include "PracticeFlappyBird/Features/Core/GameMode/MainGameModeBase.h"
-#include "Engine/TargetPoint.h"
 #include "WorldObjectManager.generated.h"
+
+class ATriggerBox;
+class ATargetPoint;
 
 UCLASS()
 class PRACTICEFLAPPYBIRD_API AWorldObjectManager : public AActor
@@ -42,6 +42,7 @@ protected:
 	TArray<ATriggerBox*> DestroyerList;
 
 private:
+	UPROPERTY(Transient)
 	TArray<AActor*> ObstaclesPipeList;
 
 	UFUNCTION()

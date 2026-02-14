@@ -4,6 +4,8 @@
 #include "FlappyBirdPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "InputMappingContext.h"
+#include "InputAction.h"
 #include "PracticeFlappyBird/Features/Player/PlayerPaperCharacter.h"
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
 #include "PracticeFlappyBird/Features/Core/GameMode/MainGameModeBase.h"
@@ -77,7 +79,7 @@ void AFlappyBirdPlayerController::OnPlayStateChanged(EMainGameState NewState) {
 	case EMainGameState::GameOver:
 		Subsystem->AddMappingContext(GameOverIMC, 0);
 		break;
-	case EMainGameState::Playing:
+	case EMainGameState::Started:
 		Subsystem->AddMappingContext(PlayingIMC, 0);
 		break;
 	default:

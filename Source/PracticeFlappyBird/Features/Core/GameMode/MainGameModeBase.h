@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "PracticeFlappyBird/Features/Player/PlayerPaperCharacter.h"
-#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
-#include "PracticeFlappyBird/Features/UI/GameHudUserWidget.h"
 #include "MainGameModeBase.generated.h"
+
+class UMyGameInstance;
+class UGameHUDUserWidget;
 
 /**
  *
@@ -28,7 +28,10 @@ protected:
 	UFUNCTION()
 	void HandleScreenOpened(UUserWidget* NewWidget);
 
+	UPROPERTY(Transient)
 	UMyGameInstance* MyGameInstance;
+
+	UPROPERTY(Transient)
 	UGameHUDUserWidget* MyGameHUDUserWidget;
 
 	void BeginPlay() override;
@@ -41,7 +44,7 @@ protected:
 	FTimerHandle CountdownTimerHandle;
 
 	UFUNCTION()
-	void OnPlayerDied();
+	void OnPlayerStatusChanged(EPlayerStatus NewStatus);
 
 	UFUNCTION()
 	void OnPlayStateChanged(EMainGameState NewState);

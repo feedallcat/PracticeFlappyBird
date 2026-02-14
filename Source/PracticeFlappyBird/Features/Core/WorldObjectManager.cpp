@@ -4,7 +4,10 @@
 #include "WorldObjectManager.h"
 #include "Engine/TriggerBox.h"
 #include "GameFramework/Actor.h"
+#include "PracticeFlappyBird/Features/Player/PlayerPaperCharacter.h"
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
+#include "Engine/TargetPoint.h"
+#include "PracticeFlappyBird/Features/Core/GameMode/MainGameModeBase.h"
 
 AWorldObjectManager::AWorldObjectManager() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -37,7 +40,7 @@ void AWorldObjectManager::Tick(float DeltaTime) {
 		switch (State) {
 		case EMainGameState::WaitingToStart:
 			break;
-		case EMainGameState::Playing:
+		case EMainGameState::Started:
 			SpawnObstacle(2.0f, DeltaTime);
 			MoveObstacle(ObstacleSpeed * DeltaTime);
 			break;
@@ -71,7 +74,7 @@ void AWorldObjectManager::OnDestroyerOverlap(AActor* OverlappedActor, AActor* Ot
 		return;
 	}
 	if (APlayerPaperCharacter* P1 = Cast<APlayerPaperCharacter>(OtherActor)) {
-		GetWorld()->DestroyActor(P1);
+		P1->KilledPlayer();
 		return;
 	}
 	GetWorld()->DestroyActor(OtherActor);
@@ -81,7 +84,7 @@ void AWorldObjectManager::OnGameStateChanged(EMainGameState NewState) {
 	switch (NewState) {
 	case EMainGameState::WaitingToStart:
 		break;
-	case EMainGameState::Playing:
+	case EMainGameState::Started:
 		break;
 	case EMainGameState::GameOver:
 		break;
