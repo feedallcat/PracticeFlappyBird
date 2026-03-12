@@ -4,10 +4,8 @@
 #include "WorldObjectManager.h"
 #include "Engine/TriggerBox.h"
 #include "GameFramework/Actor.h"
-#include "PracticeFlappyBird/Features/Player/PlayerPaperCharacter.h"
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
 #include "Engine/TargetPoint.h"
-#include "PracticeFlappyBird/Features/Core/GameMode/MainGameModeBase.h"
 
 AWorldObjectManager::AWorldObjectManager() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -20,10 +18,6 @@ void AWorldObjectManager::BeginPlay()
 
 	if (AMainGameStateBase* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
 		GS->OnGameStateChanged.AddDynamic(this, &AWorldObjectManager::OnGameStateChanged);
-	}
-
-	if (APlayerPaperCharacter* P1 = APlayerPaperCharacter::GetCurrentPlayer(GetWorld())) {
-		P1->OnPlayerStatusChanged.AddDynamic(this, &AWorldObjectManager::OnPlayerStatusChanged);
 	}
 }
 
@@ -60,23 +54,11 @@ void AWorldObjectManager::MoveObstacle(float MoveSpeed) {
 void AWorldObjectManager::OnGameStateChanged(EMainGameState NewState) {
 	switch (NewState) {
 	case EMainGameState::WaitingToStart:
+		ElapsedTime = 0.0f;
 		break;
 	case EMainGameState::Started:
 		break;
 	case EMainGameState::GameOver:
-		break;
-	default:
-		break;
-	}
-}
-
-void AWorldObjectManager::OnPlayerStatusChanged(EPlayerStatus NewStatus) {
-	switch (NewStatus) {
-	case EPlayerStatus::None:
-		break;
-	case EPlayerStatus::Alive:
-		break;
-	case EPlayerStatus::Dead:
 		DestroyAllObstacles();
 		break;
 	default:
@@ -110,7 +92,6 @@ void AWorldObjectManager::DestroyObstacle(AActor* Obstacle) {
 	if (IsValid(Obstacle))
 	{
 		ObstaclesPipeList.Remove(Obstacle);
-		Obstacle->Destroy();
 	}
 }
 

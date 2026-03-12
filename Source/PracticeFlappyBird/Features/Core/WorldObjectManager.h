@@ -35,10 +35,7 @@ private:
 
 	UFUNCTION()
 	void OnGameStateChanged(EMainGameState NewState);
-
-	UFUNCTION()
-	void OnPlayerStatusChanged(EPlayerStatus NewStatus);
-
+	
 	UFUNCTION()
 	void DestroyObstacle(AActor* Obstacle);
 	void DestroyAllObstacles();
