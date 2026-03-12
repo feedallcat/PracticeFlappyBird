@@ -23,23 +23,11 @@ protected:
 
 	void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Boundaries")
-	ATriggerBox* TopTriggerBox;
-
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Boundaries")
-	ATriggerBox* BottomTriggerBox;
-
-	UFUNCTION()
-	void OnBoundariesOverlap(AActor* OverlappedActor, AActor* OtherActor);
-
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Obstacle")
 	TArray<UClass*> ObstaclePipeClassList;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Obstacle")
 	TArray<ATargetPoint*> ObstacleSpawnPointList;
-
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Destoyer")
-	TArray<ATriggerBox*> DestroyerList;
 
 private:
 	UPROPERTY(Transient)
@@ -49,9 +37,12 @@ private:
 	void OnGameStateChanged(EMainGameState NewState);
 
 	UFUNCTION()
-	void OnDestroyerOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	void OnPlayerStatusChanged(EPlayerStatus NewStatus);
 
+	UFUNCTION()
 	void DestroyObstacle(AActor* Obstacle);
+	void DestroyAllObstacles();
+
 	UPROPERTY(EditDefaultsOnly, Category = "Obstacle")
 	UClass* ObstacleBlueprint;
 

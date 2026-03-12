@@ -31,10 +31,6 @@ void APlayerPaperCharacter::BeginPlay() {
 	}
 
 	Freeze();
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APlayerPaperCharacter::OnBeginOverlap);
-
-
-
 }
 
 void APlayerPaperCharacter::RequestJump() {
@@ -43,10 +39,6 @@ void APlayerPaperCharacter::RequestJump() {
 	GetSprite()->SetFlipbook(FbJumpUp);
 	GetSprite()->SetPlaybackPosition(0.0f, false);
 	GetSprite()->Play();
-}
-
-void APlayerPaperCharacter::TouchedTriggerBox() const {
-	OnPlayerStatusChanged.Broadcast(EPlayerStatus::Dead);
 }
 
 void APlayerPaperCharacter::Freeze() {
@@ -65,10 +57,6 @@ void APlayerPaperCharacter::Unfreeze() {
 	}
 
 	CustomTimeDilation = 1.0f;
-}
-
-void APlayerPaperCharacter::KilledPlayer() {
-	OnPlayerStatusChanged.Broadcast(EPlayerStatus::Dead);
 }
 
 APlayerPaperCharacter* APlayerPaperCharacter::GetCurrentPlayer(const UObject* WorldContextObject) {
@@ -104,20 +92,6 @@ void APlayerPaperCharacter::OnGameStateChanged(EMainGameState NewGameState) {
 	}
 }
 
-void APlayerPaperCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	if (OtherComp && OtherComp->ComponentHasTag(TEXT("ScoreTriggerBox"))) {
-		if (AMyPlayerState* PS = GetMyPlayerState()) {
-			PS->PlayerScore += 1;
-			if (UGameHUDUserWidget* GameHud = GetGameHud()) {
-				GameHud->UpdateScore(PS->PlayerScore);
-			}
-		}
-	}
-	else if (OtherComp && OtherComp->ComponentHasTag(TEXT("Obstacle"))) {
-		// KilledPlayer(); // TODO: Implement kill logic
-	}
-}
-
 class AMyPlayerState* APlayerPaperCharacter::GetMyPlayerState()
 {
 	if (!MyPS)
@@ -136,4 +110,17 @@ UGameHUDUserWidget* APlayerPaperCharacter::GetGameHud() {
 		}
 	}
 	return nullptr;
+}
+
+void APlayerPaperCharacter::AddScore_Implementation(int32 Score) {
+	if (AMyPlayerState* PS = GetMyPlayerState()) {
+		PS->PlayerScore += Score;
+		if (UGameHUDUserWidget* GameHud = GetGameHud()) {
+			GameHud->UpdateScore(PS->PlayerScore);
+		}
+	}
+}
+
+void APlayerPaperCharacter::Die_Implementation() {
+	OnPlayerStatusChanged.Broadcast(EPlayerStatus::Dead);
 }

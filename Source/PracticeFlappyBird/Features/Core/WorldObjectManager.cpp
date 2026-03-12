@@ -18,16 +18,12 @@ void AWorldObjectManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TopTriggerBox->OnActorBeginOverlap.AddDynamic(this, &AWorldObjectManager::OnBoundariesOverlap);
-	BottomTriggerBox->OnActorBeginOverlap.AddDynamic(this, &AWorldObjectManager::OnBoundariesOverlap);
-
 	if (AMainGameStateBase* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
 		GS->OnGameStateChanged.AddDynamic(this, &AWorldObjectManager::OnGameStateChanged);
 	}
 
-	for (int32 i = 0; i < DestroyerList.Num(); i++) {
-		ATriggerBox* DestroyerTriggerBox = DestroyerList[i];
-		DestroyerTriggerBox->OnActorBeginOverlap.AddDynamic(this, &AWorldObjectManager::OnDestroyerOverlap);
+	if (APlayerPaperCharacter* P1 = APlayerPaperCharacter::GetCurrentPlayer(GetWorld())) {
+		P1->OnPlayerStatusChanged.AddDynamic(this, &AWorldObjectManager::OnPlayerStatusChanged);
 	}
 }
 
@@ -61,25 +57,6 @@ void AWorldObjectManager::MoveObstacle(float MoveSpeed) {
 	}
 }
 
-
-void AWorldObjectManager::OnBoundariesOverlap(AActor* OverlappedActor, AActor* OtherActor) {
-	if (APlayerPaperCharacter* Player = Cast<APlayerPaperCharacter>(OtherActor)) {
-		Player->TouchedTriggerBox();
-	}
-}
-
-void AWorldObjectManager::OnDestroyerOverlap(AActor* OverlappedActor, AActor* OtherActor) {
-	if (OtherActor->IsA(ObstacleBlueprint)) {
-		DestroyObstacle(OtherActor);
-		return;
-	}
-	if (APlayerPaperCharacter* P1 = Cast<APlayerPaperCharacter>(OtherActor)) {
-		P1->KilledPlayer();
-		return;
-	}
-	GetWorld()->DestroyActor(OtherActor);
-}
-
 void AWorldObjectManager::OnGameStateChanged(EMainGameState NewState) {
 	switch (NewState) {
 	case EMainGameState::WaitingToStart:
@@ -87,6 +64,20 @@ void AWorldObjectManager::OnGameStateChanged(EMainGameState NewState) {
 	case EMainGameState::Started:
 		break;
 	case EMainGameState::GameOver:
+		break;
+	default:
+		break;
+	}
+}
+
+void AWorldObjectManager::OnPlayerStatusChanged(EPlayerStatus NewStatus) {
+	switch (NewStatus) {
+	case EPlayerStatus::None:
+		break;
+	case EPlayerStatus::Alive:
+		break;
+	case EPlayerStatus::Dead:
+		DestroyAllObstacles();
 		break;
 	default:
 		break;
@@ -107,6 +98,7 @@ void AWorldObjectManager::SpawnObstacle(int32 Second, float DeltaTime) {
 					ATargetPoint* RandomTargetPoint = ObstacleSpawnPointList[RandomSpawnIndex];
 					FRotator SpawnRotation = GetActorRotation();
 					AActor* Obstacle = World->SpawnActor<AActor>(ObstaclePipeClass, RandomTargetPoint->GetActorLocation(), SpawnRotation);
+					Obstacle->OnDestroyed.AddDynamic(this, &AWorldObjectManager::DestroyObstacle);
 					ObstaclesPipeList.Add(Obstacle);
 				}
 			}
@@ -115,7 +107,22 @@ void AWorldObjectManager::SpawnObstacle(int32 Second, float DeltaTime) {
 }
 
 void AWorldObjectManager::DestroyObstacle(AActor* Obstacle) {
-	ObstaclesPipeList.Remove(Obstacle);
-	GetWorld()->DestroyActor(Obstacle);
+	if (IsValid(Obstacle))
+	{
+		ObstaclesPipeList.Remove(Obstacle);
+		Obstacle->Destroy();
+	}
+}
+
+void AWorldObjectManager::DestroyAllObstacles() {
+	TArray<AActor*> PipesToDestroy = ObstaclesPipeList;
+	ObstaclesPipeList.Empty();
+	for (AActor* Obstacle : PipesToDestroy)
+	{
+		if (IsValid(Obstacle))
+		{
+			Obstacle->Destroy();
+		}
+	}
 }
 

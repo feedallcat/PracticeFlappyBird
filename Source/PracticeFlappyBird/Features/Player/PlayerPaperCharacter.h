@@ -6,6 +6,8 @@
 #include "PaperCharacter.h"
 #include "Delegates/DelegateCombinations.h"
 #include "PracticeFlappyBird/Features/Core/GameDefinitions.h"
+#include "PracticeFlappyBird/Features/Core/Interface/MortalEntity.h"
+#include "PracticeFlappyBird/Features/Core/Interface/ScoreCollector.h"
 #include "PlayerPaperCharacter.generated.h"
 
 class UPaperFlipbook;
@@ -18,7 +20,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatusChanged, EPlayerStatu
  *
  */
 UCLASS()
-class PRACTICEFLAPPYBIRD_API APlayerPaperCharacter : public APaperCharacter
+class PRACTICEFLAPPYBIRD_API APlayerPaperCharacter : public APaperCharacter, public IMortalEntity, public IScoreCollector
 {
 	GENERATED_BODY()
 
@@ -32,14 +34,13 @@ public:
 
 	static APlayerPaperCharacter* GetCurrentPlayer(const UObject* WorldContextObject);
 
-	void TouchedTriggerBox() const;
-
 	UPROPERTY(BlueprintAssignable, Category = "Player|LifeCycle")
 	FOnPlayerStatusChanged OnPlayerStatusChanged;
 
 	void RequestJump();
 
-	void KilledPlayer();
+	virtual void Die_Implementation() override;
+	virtual void AddScore_Implementation(int32 Score) override;
 
 protected:
 
@@ -66,8 +67,6 @@ protected:
 	class AMyPlayerState* GetMyPlayerState();
 
 private:
-	UFUNCTION()
-	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UPROPERTY(Transient)
 	AMyPlayerState* MyPS;
