@@ -25,6 +25,21 @@ public:
 
 	void HideScore(bool Toggle);
 
-	void UpdateCountdown(int32 Time);
+	void UpdateCountdown(float Time);
 	void HideCountdown(bool Toggle);
+
+protected:
+	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void OnGameStateChanged(EMainGameState NewState);
+
+	UFUNCTION()
+	void OnPlayerScoreChanged(int32 NewScore);
+
+	UFUNCTION()
+	void OnCountdownUpdated(float NewTime);
+
+	UFUNCTION()
+	void OnPlayerStatusChanged(EPlayerStatus NewStatus);
 };

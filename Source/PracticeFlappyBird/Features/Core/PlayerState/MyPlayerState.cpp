@@ -2,4 +2,8 @@
 
 
 #include "MyPlayerState.h"
-#include "Net/UnrealNetwork.h"
+
+void AMyPlayerState::SetPlayerScore(int32 NewScore) {
+	PlayerScore = NewScore;
+	OnPlayerScoreChanged.Broadcast(NewScore);
+}

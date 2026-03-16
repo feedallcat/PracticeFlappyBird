@@ -24,3 +24,8 @@ void AMainGameStateBase::OnReplicatedPlayState() const
 {
 	OnGameStateChanged.Broadcast(CurrentGameState);
 }
+
+void AMainGameStateBase::SetCountdownTime(float NewTime) {
+	CountdownTime = NewTime;
+	OnCountdownUpdated.Broadcast(CountdownTime);
+}

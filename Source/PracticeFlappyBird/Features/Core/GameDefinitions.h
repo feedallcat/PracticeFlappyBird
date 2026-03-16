@@ -9,6 +9,7 @@ enum class EMainGameState : uint8
 {
     None           UMETA(DisplayName = "None"),          // No game state set
     WaitingToStart UMETA(DisplayName = "Waiting To Start"), // Game loaded, waiting for first input
+    Countdown      UMETA(DisplayName = "Countdown"),      //3 2 1 before everything move
     Started        UMETA(DisplayName = "Stared"),        // Active gameplay
     GameOver       UMETA(DisplayName = "Game Over")       // Player died, game ended
 };

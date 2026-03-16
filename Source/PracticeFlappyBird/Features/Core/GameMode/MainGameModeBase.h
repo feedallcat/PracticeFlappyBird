@@ -6,9 +6,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "MainGameModeBase.generated.h"
 
-class UMyGameInstance;
-class UGameHUDUserWidget;
-
 /**
  *
  */
@@ -25,14 +22,6 @@ public:
 
 protected:
 
-	UFUNCTION()
-	void HandleScreenOpened(UUserWidget* NewWidget);
-
-	UPROPERTY(Transient)
-	UMyGameInstance* MyGameInstance;
-
-	UPROPERTY(Transient)
-	UGameHUDUserWidget* MyGameHUDUserWidget;
 
 	void BeginPlay() override;
 

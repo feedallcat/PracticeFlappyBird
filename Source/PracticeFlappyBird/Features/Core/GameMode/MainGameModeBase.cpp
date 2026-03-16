@@ -7,18 +7,10 @@
 #include "PracticeFlappyBird/Features/Input/Player/FlappyBirdPlayerController.h"
 #include "PracticeFlappyBird/Features/UI/GameHUDUserWidget.h"
 #include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"
-#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
 #include "PracticeFlappyBird/Features/Core/PlayerState/MyPlayerState.h"
 
 void AMainGameModeBase::BeginPlay() {
 	Super::BeginPlay();
-
-	if (auto* MyGI = GetGameInstance<UMyGameInstance>()) {
-		if (auto* MyUI = MyGI->GetUIManager()) {
-			MyGameInstance = MyGI;
-			MyUI->OnScreenOpened.AddDynamic(this, &AMainGameModeBase::HandleScreenOpened);
-		}
-	}
 
 	if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {
 		GS->OnGameStateChanged.AddDynamic(this, &AMainGameModeBase::OnPlayStateChanged);
@@ -31,13 +23,13 @@ void AMainGameModeBase::BeginPlay() {
 
 void AMainGameModeBase::StartGame() {
 	if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {
-		GS->SetGameState(EMainGameState::None);
+		GS->SetGameState(EMainGameState::Countdown);
 	}
-	// TODO: refactor the UI HUD WIDGETS to event driven (delegates) for easy and furture scaling.
+
 	if (GameState) {
 		for (APlayerState* PS : GameState->PlayerArray) {
 			if (auto* MyPlayerState = Cast<AMyPlayerState>(PS)) {
-				MyPlayerState->PlayerScore = 0;
+				MyPlayerState->SetPlayerScore(0);
 			}
 		}
 	}
@@ -61,27 +53,19 @@ void AMainGameModeBase::RestartGame() {
 }
 
 void AMainGameModeBase::HandleCountdown() {
-
-	MyGameHUDUserWidget->HideCountdown(false);
-	MyGameHUDUserWidget->UpdateCountdown(CountdownTime);
-
 	if (CountdownTime <= 0.0f) {
 		GetWorldTimerManager().ClearTimer(CountdownTimerHandle);
 		UE_LOG(LogTemp, Warning, TEXT("Game started!"));
-		if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {
+		if (auto* GS = GetGameState<AMainGameStateBase>()) {
 			GS->SetGameState(EMainGameState::Started);
 		}
-		MyGameHUDUserWidget->HideCountdown(true);
 	}
 	else {
+		if (auto* GS = GetGameState<AMainGameStateBase>()) {
+			GS->SetCountdownTime(CountdownTime);
+		}
 		UE_LOG(LogTemp, Warning, TEXT("Game start in : %f"), CountdownTime);
 		CountdownTime -= 1.0f;
-	}
-}
-
-void AMainGameModeBase::HandleScreenOpened(UUserWidget* NewWidget) {
-	if (auto* HUD = Cast<UGameHUDUserWidget>(NewWidget)) {
-		MyGameHUDUserWidget = HUD;
 	}
 }
 
@@ -89,6 +73,9 @@ void AMainGameModeBase::OnPlayStateChanged(EMainGameState NewState) {
 	switch (NewState) {
 	case EMainGameState::WaitingToStart:
 		CountdownTime = 3.0f;
+		if (auto* GS = GetGameState<AMainGameStateBase>()) {
+			GS->SetCountdownTime(CountdownTime);
+		}
 		break;
 	case EMainGameState::GameOver:
 		break;

@@ -9,6 +9,7 @@
 #include "MainGameStateBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameStateChanged, EMainGameState, NewState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCountdownUpdated, float, NewTime);
 
 /**
  *
@@ -30,11 +31,19 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Game State")
 	FOnGameStateChanged OnGameStateChanged;
 
+	UPROPERTY(BlueprintAssignable, Category = "Game State")
+	FOnCountdownUpdated OnCountdownUpdated;
+
+	void SetCountdownTime(float NewTime);
+
 protected:
+
+	float CountdownTime = 3.0f;
 
 	UFUNCTION()
 	void OnReplicatedPlayState() const;
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 
 };
