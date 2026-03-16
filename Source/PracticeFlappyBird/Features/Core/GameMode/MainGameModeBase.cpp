@@ -8,7 +8,7 @@
 #include "PracticeFlappyBird/Features/UI/GameHUDUserWidget.h"
 #include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"
 #include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
-
+#include "PracticeFlappyBird/Features/Core/PlayerState/MyPlayerState.h"
 
 void AMainGameModeBase::BeginPlay() {
 	Super::BeginPlay();
@@ -32,6 +32,14 @@ void AMainGameModeBase::BeginPlay() {
 void AMainGameModeBase::StartGame() {
 	if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {
 		GS->SetGameState(EMainGameState::None);
+	}
+	// TODO: refactor the UI HUD WIDGETS to event driven (delegates) for easy and furture scaling.
+	if (GameState) {
+		for (APlayerState* PS : GameState->PlayerArray) {
+			if (auto* MyPlayerState = Cast<AMyPlayerState>(PS)) {
+				MyPlayerState->PlayerScore = 0;
+			}
+		}
 	}
 	GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &AMainGameModeBase::HandleCountdown, 1.0f, true);
 }

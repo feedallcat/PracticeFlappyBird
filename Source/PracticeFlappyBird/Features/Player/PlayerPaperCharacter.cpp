@@ -78,14 +78,13 @@ void APlayerPaperCharacter::OnGameStateChanged(EMainGameState NewGameState) {
 			GameHud->HideScore(false);
 			if (AMyPlayerState* PS = GetMyPlayerState()) {
 				PS->PlayerScore = 0;
-				GameHud->HideScore(0);
+				GameHud->UpdateScore(0);
 			}
 		}
 		
 		Unfreeze();
 		break;
 	case EMainGameState::GameOver:
-		//Freeze();
 		break;
 	default:
 		break;
