@@ -29,10 +29,22 @@ DerivedDataCache/
 # Unreal Recommended
 # ---------------------
 Saved/
+Backup/
 *.xcodeproj
 *.xcworkspace
 *.DS_Store
 Thumbs.db
+
+# ---------------------
+# Editor Auto-Generated Config
+# ---------------------
+Config/DefaultEditor.ini
+Config/Layouts/
+
+# ---------------------
+# IDE / Tool Configs (local)
+# ---------------------
+shadertoolsconfig.json
 
 # ---------------------
 # Compiler Outputs
