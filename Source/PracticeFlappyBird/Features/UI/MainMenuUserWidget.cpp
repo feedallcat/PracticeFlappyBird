@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 
 void UMainMenuUserWidget::NativeConstruct() {
+	Super::NativeConstruct();
 	if (BTN_Play) {
 		BTN_Play->OnClicked.AddDynamic(this, &UMainMenuUserWidget::OnPlayBtnClicked);
 	}
@@ -22,6 +23,7 @@ void UMainMenuUserWidget::NativeDestruct() {
 	if (BTN_Quit) {
 		BTN_Quit->OnClicked.RemoveDynamic(this, &UMainMenuUserWidget::OnQuitBtnClicked);
 	}
+	Super::NativeDestruct();
 }
 
 void UMainMenuUserWidget::OnPlayBtnClicked() {

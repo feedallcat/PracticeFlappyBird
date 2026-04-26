@@ -26,7 +26,6 @@ void UGameHUDUserWidget::NativeConstruct() {
 }
 
 void UGameHUDUserWidget::NativeDestruct() {
-	Super::NativeDestruct();
 	if (auto* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
 		GS->OnGameStateChanged.RemoveDynamic(this, &UGameHUDUserWidget::OnGameStateChanged);
 		GS->OnCountdownUpdated.RemoveDynamic(this, &UGameHUDUserWidget::OnCountdownUpdated);
@@ -39,6 +38,7 @@ void UGameHUDUserWidget::NativeDestruct() {
 			PP->OnPlayerStatusChanged.RemoveDynamic(this, &UGameHUDUserWidget::OnPlayerStatusChanged);
 		}
 	}
+	Super::NativeDestruct();
 }
 
 void UGameHUDUserWidget::UpdateScore(int32 Score) {
