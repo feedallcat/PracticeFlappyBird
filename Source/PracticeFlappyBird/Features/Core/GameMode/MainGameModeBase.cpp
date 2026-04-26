@@ -8,9 +8,14 @@
 #include "PracticeFlappyBird/Features/UI/GameHUDUserWidget.h"
 #include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"
 #include "PracticeFlappyBird/Features/Core/PlayerState/MyPlayerState.h"
+#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
 
 void AMainGameModeBase::BeginPlay() {
 	Super::BeginPlay();
+
+	if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>()) {
+		GI->GetUIManager()->ShowScreen(GI->InGameHUDWidgetClass);
+	}
 
 	if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {
 		GS->OnGameStateChanged.AddDynamic(this, &AMainGameModeBase::OnPlayStateChanged);

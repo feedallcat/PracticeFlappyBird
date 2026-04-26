@@ -25,6 +25,22 @@ void UGameHUDUserWidget::NativeConstruct() {
 	}
 }
 
+void UGameHUDUserWidget::NativeDestruct() {
+	Super::NativeDestruct();
+	if (auto* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
+		GS->OnGameStateChanged.RemoveDynamic(this, &UGameHUDUserWidget::OnGameStateChanged);
+		GS->OnCountdownUpdated.RemoveDynamic(this, &UGameHUDUserWidget::OnCountdownUpdated);
+	}
+	if (auto* PC = GetOwningPlayer()) {
+		if (auto* PS = PC->GetPlayerState<AMyPlayerState>()) {
+			PS->OnPlayerScoreChanged.RemoveDynamic(this, &UGameHUDUserWidget::OnPlayerScoreChanged);
+		}
+		if (auto* PP = Cast<APlayerPaperCharacter>(PC->GetPawn())) {
+			PP->OnPlayerStatusChanged.RemoveDynamic(this, &UGameHUDUserWidget::OnPlayerStatusChanged);
+		}
+	}
+}
+
 void UGameHUDUserWidget::UpdateScore(int32 Score) {
 	if (TB_Score)
 	{

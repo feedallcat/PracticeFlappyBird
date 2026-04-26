@@ -9,8 +9,6 @@
 #include "PracticeFlappyBird/Features/Player/PlayerPaperCharacter.h"
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
 #include "PracticeFlappyBird/Features/Core/GameMode/MainGameModeBase.h"
-#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
-#include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"
 
 void AFlappyBirdPlayerController::BeginPlay() {
 	Super::BeginPlay();
@@ -34,11 +32,6 @@ void AFlappyBirdPlayerController::BeginPlay() {
 	if (AMainGameStateBase* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
 		GS->OnGameStateChanged.AddDynamic(this, &AFlappyBirdPlayerController::OnPlayStateChanged);
 		OnPlayStateChanged(GS->CurrentGameState);
-	}
-
-	if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
-	{
-		GI->GetUIManager()->ShowScreen(GI->InGameHUDWidgetClass);
 	}
 }
 
