@@ -22,6 +22,8 @@ public:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, Category = "Classes")
+	TSubclassOf<class UUserWidget> GameLayoutClass;
 
 	void BeginPlay() override;
 

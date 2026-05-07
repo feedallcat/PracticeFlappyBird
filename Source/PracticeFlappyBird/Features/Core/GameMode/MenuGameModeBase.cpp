@@ -2,13 +2,19 @@
 
 
 #include "MenuGameModeBase.h"
-#include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"
-#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
+#include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 void AMenuGameModeBase::BeginPlay() {
 	Super::BeginPlay();
 
-	if (auto* GI = GetGameInstance<UMyGameInstance>()) {
-		GI->GetUIManager()->ShowScreen(GI->MainMenuWidgetClass);
+	if (MenuLayoutClass)
+	{
+		if (auto* PC = UGameplayStatics::GetPlayerController(this, 0)) {
+			if (auto* MenuLayout = CreateWidget<UUserWidget>(PC, MenuLayoutClass))
+			{
+				MenuLayout->AddToViewport();
+			}
+		}
 	}
 }

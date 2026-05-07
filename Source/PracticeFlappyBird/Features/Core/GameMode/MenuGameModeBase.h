@@ -16,5 +16,8 @@ class PRACTICEFLAPPYBIRD_API AMenuGameModeBase : public AGameModeBase
 
 protected:
 	void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Classes")
+	TSubclassOf<class UUserWidget> MenuLayoutClass;
 	
 };

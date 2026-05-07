@@ -11,9 +11,6 @@
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
 #include "Components/CapsuleComponent.h"
 #include "PracticeFlappyBird/Features/Core/PlayerState/MyPlayerState.h"
-#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
-#include "PracticeFlappyBird/Features/UI/GameHUDUserWidget.h"
-#include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"
 #include "PaperFlipbook.h"
 #include "PaperFlipbookComponent.h"
 #include "PracticeFlappyBird/Features/Core/GameDefinitions.h"
@@ -74,14 +71,6 @@ void APlayerPaperCharacter::OnGameStateChanged(EMainGameState NewGameState) {
 		Freeze();
 		break;
 	case EMainGameState::Started:
-		if (UGameHUDUserWidget* GameHud = GetGameHud()) {
-			GameHud->HideScore(false);
-			if (AMyPlayerState* PS = GetMyPlayerState()) {
-				PS->PlayerScore = 0;
-				GameHud->UpdateScore(0);
-			}
-		}
-		
 		Unfreeze();
 		break;
 	case EMainGameState::GameOver:
@@ -100,23 +89,9 @@ class AMyPlayerState* APlayerPaperCharacter::GetMyPlayerState()
 	return MyPS;
 }
 
-UGameHUDUserWidget* APlayerPaperCharacter::GetGameHud() {
-	if (auto* MyGI = GetGameInstance<UMyGameInstance>()) {
-		if (auto* MyUI = MyGI->GetUIManager()) {
-			if (auto* HUD = Cast<UGameHUDUserWidget>(MyUI->GetCurrentWidget())) {
-				return HUD;
-			}
-		}
-	}
-	return nullptr;
-}
-
 void APlayerPaperCharacter::AddScore_Implementation(int32 Score) {
-	if (AMyPlayerState* PS = GetMyPlayerState()) {
-		PS->PlayerScore += Score;
-		if (UGameHUDUserWidget* GameHud = GetGameHud()) {
-			GameHud->UpdateScore(PS->PlayerScore);
-		}
+	if (auto* PS = GetMyPlayerState()) {
+		PS->SetPlayerScore(PS->PlayerScore + Score);
 	}
 }
 

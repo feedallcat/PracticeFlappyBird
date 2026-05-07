@@ -2,9 +2,3 @@
 
 
 #include "MyGameInstance.h"
-#include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"
-
-UUIManagerSubsystem* UMyGameInstance::GetUIManager() const
-{
-    return GetSubsystem<UUIManagerSubsystem>();
-}

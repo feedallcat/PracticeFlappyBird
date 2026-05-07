@@ -5,16 +5,19 @@
 #include "PracticeFlappyBird/Features/Player/PlayerPaperCharacter.h"
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
 #include "PracticeFlappyBird/Features/Input/Player/FlappyBirdPlayerController.h"
-#include "PracticeFlappyBird/Features/UI/GameHUDUserWidget.h"
-#include "PracticeFlappyBird/Features/UI/UIManagerSubsystem.h"
 #include "PracticeFlappyBird/Features/Core/PlayerState/MyPlayerState.h"
-#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
+#include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
 
 void AMainGameModeBase::BeginPlay() {
 	Super::BeginPlay();
 
-	if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>()) {
-		GI->GetUIManager()->ShowScreen(GI->InGameHUDWidgetClass);
+	if (GameLayoutClass) {
+		if (auto* PC = UGameplayStatics::GetPlayerController(this, 0)) {
+			if (auto* GameLayout = CreateWidget<UUserWidget>(PC, GameLayoutClass)) {
+				GameLayout->AddToViewport();
+			}
+		}
 	}
 
 	if (AMainGameStateBase* GS = GetGameState<AMainGameStateBase>()) {

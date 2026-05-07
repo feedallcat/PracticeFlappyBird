@@ -3,25 +3,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "MainMenuUserWidget.generated.h"
+#include "PracticeFlappyBird/Features/Core/UI/CoreMenuScreenBase.h"
+#include "MainMenuScreen.generated.h"
 
-class UButton;
+class UCommonButtonBase;
 
 /**
- *
+ * 
  */
 UCLASS()
-class PRACTICEFLAPPYBIRD_API UMainMenuUserWidget : public UUserWidget
+class PRACTICEFLAPPYBIRD_API UMainMenuScreen : public UCoreMenuScreenBase
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(meta = (BindWidget))
-	UButton* BTN_Play;
+	UCommonButtonBase* BTN_Play;
 
 	UPROPERTY(meta = (BindWidget))
-	UButton* BTN_Quit;
+	UCommonButtonBase* BTN_Quit;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Main Menu")
 	TSoftObjectPtr<UWorld> GameLevel;
@@ -35,5 +35,5 @@ private:
 	void OnPlayBtnClicked();
 	UFUNCTION()
 	void OnQuitBtnClicked();
-
+	
 };

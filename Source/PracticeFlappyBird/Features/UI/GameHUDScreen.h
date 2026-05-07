@@ -3,23 +3,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "GameHUDUserWidget.generated.h"
+#include "PracticeFlappyBird/Features/Core/UI/CoreGameScreenBase.h"
+#include "GameHUDScreen.generated.h"
+
+class UCommonTextBlock;
 
 /**
- *
+ * 
  */
 UCLASS()
-class PRACTICEFLAPPYBIRD_API UGameHUDUserWidget : public UUserWidget
+class PRACTICEFLAPPYBIRD_API UGameHUDScreen : public UCoreGameScreenBase
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* TB_Score;
+	class UCommonTextBlock* CTB_Score;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* TB_Countdown;
+	class UCommonTextBlock* CTB_Countdown;
 
 	void UpdateScore(int32 Score);
 
@@ -43,4 +45,5 @@ protected:
 
 	UFUNCTION()
 	void OnPlayerStatusChanged(EPlayerStatus NewStatus);
+	
 };

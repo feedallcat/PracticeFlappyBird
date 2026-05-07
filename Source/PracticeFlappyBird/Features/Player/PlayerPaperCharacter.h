@@ -12,7 +12,6 @@
 
 class UPaperFlipbook;
 class AMyPlayerState;
-class UGameHUDUserWidget;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatusChanged, EPlayerStatus, NewStatus);
 
@@ -60,8 +59,6 @@ protected:
 
 	UFUNCTION()
 	void OnGameStateChanged(EMainGameState NewState);
-
-	class UGameHUDUserWidget* GetGameHud();
 
 	UFUNCTION(BlueprintCallable, Category = "Player|State")
 	class AMyPlayerState* GetMyPlayerState();
