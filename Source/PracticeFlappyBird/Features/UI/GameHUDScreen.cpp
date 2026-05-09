@@ -12,7 +12,6 @@ void UGameHUDScreen::NativeConstruct() {
 
 	if (auto* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
 		GS->OnGameStateChanged.AddDynamic(this, &UGameHUDScreen::OnGameStateChanged);
-		GS->OnCountdownUpdated.AddDynamic(this, &UGameHUDScreen::OnCountdownUpdated);
 	}
 
 	if (auto* PC = GetOwningPlayer()) {
@@ -28,7 +27,6 @@ void UGameHUDScreen::NativeConstruct() {
 void UGameHUDScreen::NativeDestruct() {
 	if (auto* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
 		GS->OnGameStateChanged.RemoveDynamic(this, &UGameHUDScreen::OnGameStateChanged);
-		GS->OnCountdownUpdated.RemoveDynamic(this, &UGameHUDScreen::OnCountdownUpdated);
 	}
 	if (auto* PC = GetOwningPlayer()) {
 		if (auto* PS = PC->GetPlayerState<AMyPlayerState>()) {
@@ -48,43 +46,13 @@ void UGameHUDScreen::UpdateScore(int32 Score) {
 	}
 }
 
-void UGameHUDScreen::HideScore(bool Toggle) {
-	if (CTB_Score) {
-		if (Toggle) {
-			CTB_Score->SetVisibility(ESlateVisibility::Hidden);
-		}
-		else {
-			CTB_Score->SetVisibility(ESlateVisibility::Visible);
-		}
-	}
-}
-
-void UGameHUDScreen::UpdateCountdown(float Time) {
-	if (CTB_Countdown) {
-		CTB_Countdown->SetText(FText::Format(NSLOCTEXT("UGameHUDScreen", "Countdown", "Game Start in: {0}"), FText::AsNumber(Time)));
-	}
-}
-
-void UGameHUDScreen::HideCountdown(bool Toggle) {
-	if (CTB_Countdown) {
-		if (Toggle) {
-			CTB_Countdown->SetVisibility(ESlateVisibility::Hidden);
-		}
-		else {
-			CTB_Countdown->SetVisibility(ESlateVisibility::Visible);
-		}
-	}
-}
-
 void UGameHUDScreen::OnGameStateChanged(EMainGameState NewState) {
 	switch (NewState) {
 	case EMainGameState::WaitingToStart:
 		break;
 	case EMainGameState::Countdown:
-		HideCountdown(false);
 		break;
 	case EMainGameState::Started:
-		HideCountdown(true);
 		break;
 	case EMainGameState::GameOver:
 		break;
@@ -107,8 +75,4 @@ void UGameHUDScreen::OnPlayerStatusChanged(EPlayerStatus NewStatus) {
 
 void UGameHUDScreen::OnPlayerScoreChanged(int32 NewScore) {
 	UpdateScore(NewScore);
-}
-
-void UGameHUDScreen::OnCountdownUpdated(float NewTime) {
-	UpdateCountdown(NewTime);
 }

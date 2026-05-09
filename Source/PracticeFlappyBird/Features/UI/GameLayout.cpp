@@ -4,6 +4,7 @@
 #include "GameLayout.h"
 #include "PracticeFlappyBird/Features/Player/PlayerPaperCharacter.h"
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
+#include "Widgets/CommonActivatableWidgetContainer.h"
 
 void UGameLayout::NativeConstruct() {
 	Super::NativeConstruct();
@@ -30,13 +31,27 @@ void UGameLayout::NativeDestruct() {
 void UGameLayout::OnPlayStateChanged(EMainGameState NewState) {
 	switch (NewState) {
 	case EMainGameState::WaitingToStart:
+		if (MainStack) MainStack->ClearWidgets();
+		if (WaitingScreenClass) {
+			PushScreen(WaitingScreenClass);
+		}
+		break;
+	case EMainGameState::Countdown:
+		if(CountdownScreenClass) {
+			PopCurrentScreen();
+			PushScreen(CountdownScreenClass);
+		}
 		break;
 	case EMainGameState::GameOver:
 		if (GameOverScreenClass) {
+			PopCurrentScreen();
 			PushScreen(GameOverScreenClass);
 		}
 		break;
 	case EMainGameState::Started:
+		if(GameHudScreenClass) {
+			PushScreen(GameHudScreenClass);
+		}
 		break;
 	default:
 		break;

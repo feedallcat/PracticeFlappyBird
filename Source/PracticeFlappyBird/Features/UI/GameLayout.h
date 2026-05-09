@@ -28,6 +28,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Screens")
 	TSubclassOf<UCommonActivatableWidget> PauseMenuScreenClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Screens")
+	TSubclassOf<UCommonActivatableWidget> WaitingScreenClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Screens")
+	TSubclassOf<UCommonActivatableWidget> CountdownScreenClass;
+
 	UFUNCTION()
 	void OnPlayerStatusChanged(EPlayerStatus NewStatus);
 

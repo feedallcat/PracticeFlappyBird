@@ -9,7 +9,7 @@
 class UCommonTextBlock;
 
 /**
- * 
+ *
  */
 UCLASS()
 class PRACTICEFLAPPYBIRD_API UGameHUDScreen : public UCoreGameScreenBase
@@ -18,17 +18,9 @@ class PRACTICEFLAPPYBIRD_API UGameHUDScreen : public UCoreGameScreenBase
 
 public:
 	UPROPERTY(meta = (BindWidget))
-	class UCommonTextBlock* CTB_Score;
-
-	UPROPERTY(meta = (BindWidget))
-	class UCommonTextBlock* CTB_Countdown;
+	UCommonTextBlock* CTB_Score;
 
 	void UpdateScore(int32 Score);
-
-	void HideScore(bool Toggle);
-
-	void UpdateCountdown(float Time);
-	void HideCountdown(bool Toggle);
 
 protected:
 	virtual void NativeConstruct() override;
@@ -41,9 +33,6 @@ protected:
 	void OnPlayerScoreChanged(int32 NewScore);
 
 	UFUNCTION()
-	void OnCountdownUpdated(float NewTime);
-
-	UFUNCTION()
 	void OnPlayerStatusChanged(EPlayerStatus NewStatus);
-	
+
 };

@@ -16,19 +16,6 @@ void AFlappyBirdPlayerController::BeginPlay() {
 		Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	}
 
-	if (APlayerPaperCharacter* p1 = APlayerPaperCharacter::GetCurrentPlayer(this)) {
-		if (AFlappyBirdPlayerController* PC = Cast< AFlappyBirdPlayerController>(p1->GetController())) {
-			if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(PC->InputComponent)) {
-				if (StartGameAction) {
-					EIC->BindAction(StartGameAction, ETriggerEvent::Started, this, &AFlappyBirdPlayerController::RequestStartGame);
-				}
-				if (RestartGameAction) {
-					EIC->BindAction(RestartGameAction, ETriggerEvent::Started, this, &AFlappyBirdPlayerController::RequestRestartGame);
-				}
-			}
-		}
-	}
-
 	if (AMainGameStateBase* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
 		GS->OnGameStateChanged.AddDynamic(this, &AFlappyBirdPlayerController::OnPlayStateChanged);
 		OnPlayStateChanged(GS->CurrentGameState);
@@ -67,27 +54,13 @@ void AFlappyBirdPlayerController::OnPlayStateChanged(EMainGameState NewState) {
 	Subsystem->ClearAllMappings();
 	switch (NewState) {
 	case EMainGameState::WaitingToStart:
-		Subsystem->AddMappingContext(StartGameIMC, 0);
 		break;
 	case EMainGameState::GameOver:
-		Subsystem->AddMappingContext(GameOverIMC, 0);
 		break;
 	case EMainGameState::Started:
 		Subsystem->AddMappingContext(PlayingIMC, 0);
 		break;
 	default:
 		break;
-	}
-}
-
-void AFlappyBirdPlayerController::RequestStartGame() {
-	if (AMainGameModeBase* GM = Cast<AMainGameModeBase>(GetWorld()->GetAuthGameMode())) {
-		GM->StartGame();
-	}
-}
-
-void AFlappyBirdPlayerController::RequestRestartGame() {
-	if (AMainGameModeBase* GM = Cast<AMainGameModeBase>(GetWorld()->GetAuthGameMode())) {
-		GM->RestartGame();
 	}
 }

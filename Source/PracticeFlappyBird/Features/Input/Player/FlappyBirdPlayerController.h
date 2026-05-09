@@ -36,27 +36,10 @@ private:
 	UEnhancedInputLocalPlayerSubsystem* Subsystem;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Flappy Bird Input")
-	UInputMappingContext* StartGameIMC;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Flappy Bird Input")
 	UInputMappingContext* PlayingIMC;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Flappy Bird Input")
-	UInputMappingContext* GameOverIMC;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Flappy Bird Input")
-	UInputAction* StartGameAction;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Flappy Bird Input")
-	UInputAction* RestartGameAction;
 
 	UPROPERTY(EditDefaultsOnly, Category= "Flappy Bird Input")
 	UInputAction* JumpAction;
 
 	void RequestJump();
-
-	void RequestStartGame();
-
-	void RequestRestartGame();
-	
 };
