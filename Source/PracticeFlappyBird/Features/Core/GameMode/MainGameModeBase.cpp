@@ -84,6 +84,13 @@ void AMainGameModeBase::OnPlayStateChanged(EMainGameState NewState) {
 		if (auto* GS = GetGameState<AMainGameStateBase>()) {
 			GS->SetCountdownTime(CountdownTime);
 		}
+		if (GameState) {
+			for (APlayerState* PS : GameState->PlayerArray) {
+				if (auto* MyPlayerState = Cast<AMyPlayerState>(PS)) {
+					MyPlayerState->SetPlayerScore(0);
+				}
+			}
+		}
 		break;
 	case EMainGameState::GameOver:
 		break;

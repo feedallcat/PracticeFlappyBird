@@ -17,6 +17,7 @@ void UGameHUDScreen::NativeConstruct() {
 	if (auto* PC = GetOwningPlayer()) {
 		if (auto* PS = PC->GetPlayerState<AMyPlayerState>()) {
 			PS->OnPlayerScoreChanged.AddDynamic(this, &UGameHUDScreen::OnPlayerScoreChanged);
+			UpdateScore(PS->PlayerScore);
 		}
 		if (auto* PP = Cast<APlayerPaperCharacter>(PC->GetPawn())) {
 			PP->OnPlayerStatusChanged.AddDynamic(this, &UGameHUDScreen::OnPlayerStatusChanged);
