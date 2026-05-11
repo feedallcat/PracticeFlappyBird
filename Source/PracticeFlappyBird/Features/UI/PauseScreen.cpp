@@ -25,7 +25,6 @@ void UPauseScreen::NativeDestruct()
 
 bool UPauseScreen::NativeOnHandleBackAction()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Back Action Pressed on Pause Menu!!!"));
 	if(auto* PC = GetOwningPlayer<AFlappyBirdPlayerController>())
 	{
 		PC->RequestPause();

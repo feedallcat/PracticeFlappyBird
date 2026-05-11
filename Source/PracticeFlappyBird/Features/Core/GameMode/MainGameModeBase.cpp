@@ -48,7 +48,6 @@ void AMainGameModeBase::StartGame() {
 void AMainGameModeBase::RestartGame() {
 	if (APlayerPaperCharacter* P1 = APlayerPaperCharacter::GetCurrentPlayer(GetWorld())) {
 		if (AFlappyBirdPlayerController* PC = Cast<AFlappyBirdPlayerController>(P1->GetController())) {
-			UE_LOG(LogTemp, Warning, TEXT("Restarting game for player!!"));
 			GetWorld()->DestroyActor(P1);
 			RestartPlayer(PC);
 			if (APlayerPaperCharacter* P2 = APlayerPaperCharacter::GetCurrentPlayer(GetWorld())) {
@@ -64,7 +63,6 @@ void AMainGameModeBase::RestartGame() {
 void AMainGameModeBase::HandleCountdown() {
 	if (CountdownTime <= 0.0f) {
 		GetWorldTimerManager().ClearTimer(CountdownTimerHandle);
-		UE_LOG(LogTemp, Warning, TEXT("Game started!"));
 		if (auto* GS = GetGameState<AMainGameStateBase>()) {
 			GS->SetGameState(EMainGameState::Started);
 		}
@@ -73,7 +71,6 @@ void AMainGameModeBase::HandleCountdown() {
 		if (auto* GS = GetGameState<AMainGameStateBase>()) {
 			GS->SetCountdownTime(CountdownTime);
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Game start in : %f"), CountdownTime);
 		CountdownTime -= 1.0f;
 	}
 }
