@@ -59,3 +59,68 @@ Source/PracticeFlappyBird/Features/
     ├── PauseScreen.cpp / .h
     └── WaitingScreen.cpp / .h
 ```
+
+## 🎨 Legacy Blueprint Folder Structure
+Below is the comprehensive `Content/` folder structure representing every visual Blueprint, Map, Input Asset, and Sprite inside the Unreal Editor.
+
+```text
+Content/PracticeFlappyBird/
+│
+├── Maps/
+│   ├── MAP_Menu.umap
+│   └── MAP_Sandbox.umap
+│
+└── Features/
+    ├── Background/ (Sprites & Tilemaps)
+    ├── Decorations/ (Sprites)
+    ├── Tiles/ (Sprites & TileMaps)
+    │
+    ├── Core/
+    │   ├── Controller/
+    │   │   └── BP_FlappyBirdController.uasset
+    │   ├── GameMode/
+    │   │   ├── BP_GameModeBase.uasset
+    │   │   └── BP_MenuGameModeBase.uasset
+    │   ├── Obstacles/
+    │   │   ├── BP_Boundary.uasset
+    │   │   ├── BP_DeathZone.uasset
+    │   │   └── BP_Obstacle(1-3).uasset
+    │   └── BP_WorldObjectManager.uasset
+    │
+    ├── Input/
+    │   ├── CommonUI/
+    │   │   ├── DA_KeyboardMouseInput.uasset
+    │   │   └── InputData.uasset
+    │   └── Player/
+    │       ├── IA_Jump.uasset
+    │       ├── IA_TogglePause.uasset
+    │       └── IMC_Default.uasset
+    │
+    ├── Player/
+    │   ├── Animations/
+    │   │   ├── FB_Idle.uasset
+    │   │   ├── FB_JumpDown.uasset
+    │   │   └── FB_JumpUp.uasset
+    │   ├── Blueprints/
+    │   │   └── BP_PlayerPaperCharacter.uasset
+    │   └── Sprites/
+    │       └── char_blue.uasset (And associated sliced sprites)
+    │
+    └── UI/
+        ├── Fonts/
+        │   └── (Roboto Font Family .uassets)
+        ├── Style/ (CommonUI Styling Assets)
+        │   ├── ButtonStyle_Primary/Secondary/Danger/Ghost/IconOnly.uasset
+        │   └── TextStyle_Heading1/Heading2/Body/Caption/ButtonPrimary.uasset
+        │
+        ├── BP_MyGameInstance.uasset
+        ├── W_Button_Default.uasset
+        ├── W_Countdown.uasset
+        ├── W_GameHud.uasset
+        ├── W_GameLayout.uasset
+        ├── W_GameOver.uasset
+        ├── W_MainMenu.uasset
+        ├── W_MenuLayout.uasset
+        ├── W_PauseMenu.uasset
+        └── W_Waiting.uasset
+```
