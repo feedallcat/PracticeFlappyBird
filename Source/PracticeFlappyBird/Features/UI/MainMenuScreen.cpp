@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "CommonButtonBase.h"
+#include "CommonTextBlock.h"
+#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
 
 void UMainMenuScreen::NativeConstruct() {
 	Super::NativeConstruct();
@@ -13,6 +15,15 @@ void UMainMenuScreen::NativeConstruct() {
 	}
 	if (BTN_Quit) {
 		BTN_Quit->OnClicked().AddUObject(this, &UMainMenuScreen::OnQuitBtnClicked);
+	}
+	if (CTB_Highscore) {
+		if (UMyGameInstance* MyGi = GetGameInstance<UMyGameInstance>()) {
+			if (UFlappyBirdSaveGameData* LoadedSaveGame = MyGi->CachedSaveData) {
+				CTB_Highscore->SetText(FText::Format(NSLOCTEXT("UMainMenuScreen", "Highscore", "Player: {0}, Highscore: {1}"),
+					FText::FromString(LoadedSaveGame->PlayerName),
+					FText::AsNumber(LoadedSaveGame->HighScore)));
+			}
+		}
 	}
 }
 

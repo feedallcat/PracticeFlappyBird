@@ -8,6 +8,7 @@
 #include "PracticeFlappyBird/Features/Core/PlayerState/MyPlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
+#include "PracticeFlappyBird/Features/Core/MyGameInstance.h"
 
 void AMainGameModeBase::BeginPlay() {
 	Super::BeginPlay();
@@ -91,6 +92,15 @@ void AMainGameModeBase::OnPlayStateChanged(EMainGameState NewState) {
 		}
 		break;
 	case EMainGameState::GameOver:
+		if (GameState) {
+			if (UMyGameInstance* MyGi = GetGameInstance<UMyGameInstance>()) {
+				for (APlayerState* Ps : GameState->PlayerArray) {
+					if (AMyPlayerState* MyPs = Cast<AMyPlayerState>(Ps)) {
+						MyGi->SaveHighScore(MyPs->PlayerScore, TEXT("Player!!!"));
+					}
+				}
+			}
+		}
 		break;
 	case EMainGameState::Started:
 		break;

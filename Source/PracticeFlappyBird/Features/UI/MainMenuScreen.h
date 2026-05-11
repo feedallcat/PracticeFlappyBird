@@ -7,6 +7,7 @@
 #include "MainMenuScreen.generated.h"
 
 class UCommonButtonBase;
+class UCommonTextBlock;
 
 /**
  * 
@@ -22,6 +23,9 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UCommonButtonBase* BTN_Quit;
+
+	UPROPERTY(meta = (BindWidget))
+	UCommonTextBlock* CTB_Highscore;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Main Menu")
 	TSoftObjectPtr<UWorld> GameLevel;
