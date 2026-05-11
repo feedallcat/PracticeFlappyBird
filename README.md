@@ -1,6 +1,8 @@
 # Practice Flappy Bird
 
-A foundational Unreal Engine 5 C++ project built to study AAA game architecture, UI routing, and input management.
+A foundational C++ project built to study AAA game architecture, UI routing, and input management.
+
+**Built With:** Unreal Engine 5.7
 
 ## 🌟 Key Features Implemented
 * **Common UI Architecture:** Fully integrated stack-based UI routing (`GameLayout`) with C++ base classes for strictly separating Menus and HUDs.
