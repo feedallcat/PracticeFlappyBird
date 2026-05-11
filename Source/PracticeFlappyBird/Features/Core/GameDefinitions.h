@@ -11,7 +11,8 @@ enum class EMainGameState : uint8
     WaitingToStart UMETA(DisplayName = "Waiting To Start"), // Game loaded, waiting for first input
     Countdown      UMETA(DisplayName = "Countdown"),      //3 2 1 before everything move
     Started        UMETA(DisplayName = "Stared"),        // Active gameplay
-    GameOver       UMETA(DisplayName = "Game Over")       // Player died, game ended
+    GameOver       UMETA(DisplayName = "Game Over"),       // Player died, game ended
+    Pause          UMETA(DisplayName = "Pause")           // Pause...
 };
 
 UENUM(BlueprintType)

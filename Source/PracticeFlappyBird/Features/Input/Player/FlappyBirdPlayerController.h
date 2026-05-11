@@ -22,6 +22,7 @@ class PRACTICEFLAPPYBIRD_API AFlappyBirdPlayerController : public APlayerControl
 public:
 	void AddInputContext(const UInputMappingContext* Context, int32 Priority = 0);
 	void RemoveInputContext(const UInputMappingContext* Context);
+	void RequestPause();
 
 protected:
 	 void BeginPlay() override;
@@ -38,8 +39,11 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Flappy Bird Input")
 	UInputMappingContext* PlayingIMC;
 
-	UPROPERTY(EditDefaultsOnly, Category= "Flappy Bird Input")
+	UPROPERTY(EditDefaultsOnly, Category = "Flappy Bird Input")
 	UInputAction* JumpAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Flappy Bird Input")
+	UInputAction* PauseAction;
 
 	void RequestJump();
 };

@@ -9,6 +9,8 @@
 #include "PracticeFlappyBird/Features/Player/PlayerPaperCharacter.h"
 #include "PracticeFlappyBird/Features/Core/MainGameStateBase.h"
 #include "PracticeFlappyBird/Features/Core/GameMode/MainGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
+
 
 void AFlappyBirdPlayerController::BeginPlay() {
 	Super::BeginPlay();
@@ -40,6 +42,9 @@ void AFlappyBirdPlayerController::SetupInputComponent() {
 		if (JumpAction) {
 			EIC->BindAction(JumpAction, ETriggerEvent::Started, this, &AFlappyBirdPlayerController::RequestJump);
 		}
+		if (PauseAction) {
+			EIC->BindAction(PauseAction, ETriggerEvent::Started, this, &AFlappyBirdPlayerController::RequestPause);
+		}
 	}
 }
 
@@ -47,7 +52,22 @@ void AFlappyBirdPlayerController::RequestJump() {
 	if (APlayerPaperCharacter* P1 = APlayerPaperCharacter::GetCurrentPlayer(this)) {
 		P1->RequestJump();
 	}
-	
+
+}
+
+void AFlappyBirdPlayerController::RequestPause() {
+	UE_LOG(LogTemp, Warning, TEXT("Toggle Pause!!!"));
+	if (auto* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
+		if (UGameplayStatics::IsGamePaused(this)) {
+			GS->SetGameState(EMainGameState::Started);
+			UGameplayStatics::SetGamePaused(this, false);
+		}
+		else {
+			GS->SetGameState(EMainGameState::Pause);
+			UGameplayStatics::SetGamePaused(this, true);
+		}
+	}
+
 }
 
 void AFlappyBirdPlayerController::OnPlayStateChanged(EMainGameState NewState) {
@@ -58,6 +78,7 @@ void AFlappyBirdPlayerController::OnPlayStateChanged(EMainGameState NewState) {
 	case EMainGameState::GameOver:
 		break;
 	case EMainGameState::Started:
+	case EMainGameState::Pause:
 		Subsystem->AddMappingContext(PlayingIMC, 0);
 		break;
 	default:

@@ -39,6 +39,9 @@ void UGameLayout::OnPlayStateChanged(EMainGameState NewState) {
 	case EMainGameState::Countdown:
 		if(CountdownScreenClass) {
 			PopCurrentScreen();
+			if (GameHudScreenClass) {
+				PushScreen(GameHudScreenClass);
+			}
 			PushScreen(CountdownScreenClass);
 		}
 		break;
@@ -49,8 +52,11 @@ void UGameLayout::OnPlayStateChanged(EMainGameState NewState) {
 		}
 		break;
 	case EMainGameState::Started:
-		if(GameHudScreenClass) {
-			PushScreen(GameHudScreenClass);
+		PopCurrentScreen();
+		break;
+	case EMainGameState::Pause:
+		if (PauseMenuScreenClass) {
+			PushScreen(PauseMenuScreenClass);
 		}
 		break;
 	default:

@@ -42,6 +42,7 @@ void AMainGameModeBase::StartGame() {
 		}
 	}
 	GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &AMainGameModeBase::HandleCountdown, 1.0f, true);
+	HandleCountdown();
 }
 
 void AMainGameModeBase::RestartGame() {
