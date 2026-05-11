@@ -6,10 +6,11 @@
 #include "CommonTextBlock.h"
 
 void UCountdownScreen::NativeConstruct() {
-	Super::NativePreConstruct();
+	Super::NativeConstruct();
 
 	if (auto* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
 		GS->OnCountdownUpdated.AddDynamic(this, &UCountdownScreen::OnCountdownUpdated);
+		OnCountdownUpdated(3.0f);
 	}
 }
 
@@ -17,6 +18,7 @@ void UCountdownScreen::NativeDestruct() {
 	if (auto* GS = GetWorld()->GetGameState<AMainGameStateBase>()) {
 		GS->OnCountdownUpdated.RemoveDynamic(this, &UCountdownScreen::OnCountdownUpdated);
 	}
+	Super::NativeDestruct();
 }
 
 void UCountdownScreen::OnCountdownUpdated(float Time) {
